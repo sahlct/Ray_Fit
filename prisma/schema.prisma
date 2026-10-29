@@ -1,0 +1,579 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ==========================================
+// 1. TENANT MANAGEMENT
+// ==========================================
+
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+  TRIAL
+  ARCHIVED
+}
+
+model Tenant {
+  id               String            @id @default(uuid())
+  name             String
+  slug             String            @unique // e.g. "green-valley-school"
+  logoUrl          String?
+  primaryColor     String?           @default("#0f766e")
+  secondaryColor   String?           @default("#f59e0b")
+  contactEmail     String
+  contactPhone     String?
+  address          String?
+  status           TenantStatus      @default(ACTIVE)
+  subscriptionPlan String?           @default("standard")
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  users            User[]
+  roles            Role[]
+  userTypes        UserType[]
+  classes          Class[]
+  tasks            HealthTask[]
+  benchmarkVersions BenchmarkVersion[]
+  timetables       TimetableAssignment[]
+  wearableDevices  WearableDevice[]
+  healthRecords    HealthMetricRecord[]
+  evaluations      TaskEvaluationResult[]
+  auditLogs        AuditLog[]
+  registrationRequests RegistrationRequest[]
+  subscriptionPayments TenantSubscriptionPayment[]
+  banners          AdBanner[]
+
+  @@index([slug])
+  @@index([status])
+}
+
+// ==========================================
+// 2. AUTHENTICATION, ROLES & PERMISSIONS
+// ==========================================
+
+enum PlatformRole {
+  SUPER_ADMIN // Platform owner
+  TENANT_USER // Scoped to tenant
+}
+
+model User {
+  id              String         @id @default(uuid())
+  tenantId        String?        // Null for platform Super Admins
+  email           String
+  phone           String?
+  passwordHash    String
+  fullName        String
+  platformRole    PlatformRole   @default(TENANT_USER)
+  roleId          String?        // Tenant-specific RBAC role
+  userTypeId      String?        // e.g. Student, Parent, Coach, Teacher
+  isActive        Boolean        @default(true)
+  profileData     Json?          // Dynamic custom field values validated against UserType schema
+  lastLoginAt     DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  tenant          Tenant?        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  role            Role?          @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  userType        UserType?      @relation(fields: [userTypeId], references: [id], onDelete: Restrict)
+
+  // Academic Relations
+  enrollments     StudentEnrollment[]
+  instructedBatches BatchInstructor[]
+  
+  // Health & Wearables
+  assignedDevices WearableDevice[]
+  healthRecords   HealthMetricRecord[]
+  evaluations     TaskEvaluationResult[]
+  createdTasks    HealthTask[]   @relation("CreatedTasks")
+  auditActions    AuditLog[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId, userTypeId])
+  @@index([tenantId, roleId])
+  @@index([email])
+}
+
+model Role {
+  id          String           @id @default(uuid())
+  tenantId    String
+  name        String           // e.g. "School Admin", "Head Coach", "Physiotherapist"
+  description String?
+  isSystem    Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  tenant      Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  users       User[]
+  permissions RolePermission[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+}
+
+model Permission {
+  id          String           @id @default(uuid())
+  module      String           // e.g. "USERS", "CLASSES", "TASKS", "BENCHMARKS", "REPORTS", "AUDIT"
+  action      String           // e.g. "VIEW", "CREATE", "EDIT", "DELETE", "ASSIGN", "EXPORT", "MANAGE"
+  description String?
+
+  roles       RolePermission[]
+
+  @@unique([module, action])
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+// ==========================================
+// 3. DYNAMIC USER TYPES & CUSTOM FIELDS
+// ==========================================
+
+enum FieldType {
+  TEXT
+  NUMBER
+  DATE
+  EMAIL
+  PHONE
+  DROPDOWN
+  MULTI_SELECT
+  CHECKBOX
+  TEXTAREA
+}
+
+model UserType {
+  id           String        @id @default(uuid())
+  tenantId     String
+  name         String        // e.g. "Student", "Parent", "Coach", "Physiotherapist"
+  slug         String        // e.g. "student", "parent"
+  iconName     String?       @default("User")
+  isSystem     Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customFields CustomField[]
+  users        User[]
+  registrationRequests RegistrationRequest[]
+
+  @@unique([tenantId, slug])
+  @@index([tenantId])
+}
+
+model CustomField {
+  id           String     @id @default(uuid())
+  userTypeId   String
+  label        String     // e.g. "Emergency Contact Name"
+  fieldKey     String     // e.g. "emergency_contact_name"
+  fieldType    FieldType
+  isRequired   Boolean    @default(false)
+  placeholder  String?
+  options      Json?      // Array of options for DROPDOWN / MULTI_SELECT: ["A+", "B+", "O+"]
+  validation   Json?      // Regex patterns, min/max limits, etc.
+  displayOrder Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  userType     UserType   @relation(fields: [userTypeId], references: [id], onDelete: Cascade)
+
+  @@unique([userTypeId, fieldKey])
+  @@index([userTypeId, displayOrder])
+}
+
+// ==========================================
+// 4. ACADEMIC STRUCTURE: CLASSES & BATCHES
+// ==========================================
+
+model Class {
+  id             String     @id @default(uuid())
+  tenantId       String
+  name           String     // e.g. "Grade 10"
+  academicPeriod String     // e.g. "2026-2027"
+  description    String?
+  isActive       Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  tenant         Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  batches        Batch[]
+  tasks          HealthTaskAssignment[]
+
+  @@unique([tenantId, name, academicPeriod])
+  @@index([tenantId])
+}
+
+model Batch {
+  id          String             @id @default(uuid())
+  classId     String
+  name        String             // e.g. "Batch A", "Morning Athletics"
+  capacity    Int                @default(30)
+  schedule    String?            // e.g. "Mon, Wed, Fri 08:00 - 09:30"
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  class       Class              @relation(fields: [classId], references: [id], onDelete: Cascade)
+  instructors BatchInstructor[]
+  enrollments StudentEnrollment[]
+  tasks       HealthTaskAssignment[]
+
+  @@unique([classId, name])
+  @@index([classId])
+}
+
+model BatchInstructor {
+  batchId   String
+  userId    String // Coach / Teacher
+  role      String? @default("Primary Coach")
+
+  batch     Batch  @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([batchId, userId])
+}
+
+model StudentEnrollment {
+  id          String   @id @default(uuid())
+  batchId     String
+  studentId   String
+  rollNumber  String?
+  enrolledAt  DateTime @default(now())
+  isActive    Boolean  @default(true)
+
+  batch       Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  student     User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([batchId, studentId])
+  @@index([batchId])
+  @@index([studentId])
+}
+
+// ==========================================
+// 5. HEALTH TASKS, BENCHMARKS & TIMETABLES
+// ==========================================
+
+enum HealthMetricType {
+  STEPS
+  HEART_RATE
+  BLOOD_PRESSURE_SYSTOLIC
+  BLOOD_PRESSURE_DIASTOLIC
+  SLEEP_DURATION_MINUTES
+  CALORIES_BURNED
+  ACTIVE_MINUTES
+  SPO2_PERCENTAGE
+}
+
+enum BenchmarkOperator {
+  GREATER_THAN_OR_EQUAL
+  LESS_THAN_OR_EQUAL
+  EXACT_MATCH
+  BETWEEN_INCLUSIVE
+  BETWEEN_EXCLUSIVE
+}
+
+enum FrequencyType {
+  DAILY
+  WEEKLY
+  SPECIFIC_TIME_WINDOW
+}
+
+model HealthTask {
+  id          String                 @id @default(uuid())
+  tenantId    String
+  createdById String
+  title       String                 // e.g. "Morning Cardio Step Goal"
+  description String?
+  metricType  HealthMetricType
+  unit        String                 // e.g. "steps", "bpm", "mmHg", "minutes"
+  frequency   FrequencyType          @default(DAILY)
+  isActive    Boolean                @default(true)
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  tenant      Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdBy   User                   @relation("CreatedTasks", fields: [createdById], references: [id], onDelete: Restrict)
+  benchmarks  BenchmarkVersion[]
+  assignments HealthTaskAssignment[]
+
+  @@index([tenantId, metricType])
+}
+
+model BenchmarkVersion {
+  id               String            @id @default(uuid())
+  taskId           String
+  tenantId         String
+  versionNumber    Int               @default(1)
+  operator         BenchmarkOperator
+  minValue         Decimal?          @db.Decimal(10, 2)
+  maxValue         Decimal?          @db.Decimal(10, 2)
+  targetValue      Decimal?          @db.Decimal(10, 2)
+  clinicalNotes    String?           // Notes or guidelines from physiotherapist/physician
+  criticalZones    Json?             // Array of critical alert thresholds: [{ type: "BELOW" | "ABOVE", value: number, label?: string }]
+  effectiveFrom    DateTime          @default(now())
+  effectiveTo      DateTime?         // Null means currently active version
+  createdAt        DateTime          @default(now())
+
+  task             HealthTask        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tenant           Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  timetableEntries TimetableAssignment[]
+  evaluations      TaskEvaluationResult[]
+
+  @@index([taskId, versionNumber])
+  @@index([tenantId])
+}
+
+model HealthTaskAssignment {
+  id          String     @id @default(uuid())
+  taskId      String
+  classId     String?    // If assigned at class level
+  batchId     String?    // If assigned at batch level
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+
+  task        HealthTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  class       Class?     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  batch       Batch?     @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  timetableEntries TimetableAssignment[]
+
+  @@index([taskId])
+  @@index([classId])
+  @@index([batchId])
+}
+
+model TimetableAssignment {
+  id                 String               @id @default(uuid())
+  tenantId           String
+  assignmentId       String
+  benchmarkVersionId String
+  scheduledDate      DateTime             @db.Date
+  windowStartTime    String?              // e.g. "07:00"
+  windowEndTime      String?              // e.g. "18:00"
+  durationMinutes    Int?                 // e.g. 90
+  status             String               @default("SCHEDULED") // SCHEDULED, ACTIVE, COMPLETED, EXPIRED
+  createdAt          DateTime             @default(now())
+
+  tenant             Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  assignment         HealthTaskAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  benchmarkVersion   BenchmarkVersion     @relation(fields: [benchmarkVersionId], references: [id], onDelete: Restrict)
+  evaluations        TaskEvaluationResult[]
+
+  @@unique([assignmentId, scheduledDate])
+  @@index([tenantId, scheduledDate])
+}
+
+// ==========================================
+// 6. WEARABLES, HEALTH DATA & EVALUATION
+// ==========================================
+
+enum DeviceStatus {
+  UNPAIRED
+  ACTIVE
+  SYNCING
+  MAINTENANCE
+  DECOMMISSIONED
+}
+
+model WearableDevice {
+  id           String             @id @default(uuid())
+  tenantId     String
+  studentId    String?
+  deviceUuid   String             // Hardware MAC address or unique vendor serial
+  vendorName   String             // e.g. "Fitbit", "Garmin", "RayBand Pro", "Generic BLE"
+  modelNumber  String?
+  firmwareVer  String?
+  batteryLevel Int?               @default(100)
+  status       DeviceStatus       @default(ACTIVE)
+  lastSyncAt   DateTime?
+  registeredAt DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  tenant       Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  student      User?              @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  measurements HealthMetricRecord[]
+
+  @@unique([tenantId, deviceUuid])
+  @@index([tenantId, studentId])
+}
+
+model HealthMetricRecord {
+  id          String           @id @default(uuid())
+  tenantId    String
+  studentId   String
+  deviceId    String?
+  metricType  HealthMetricType
+  numericVal  Decimal          @db.Decimal(10, 2)
+  unit        String
+  recordedAt  DateTime         // Original timestamp on band
+  syncedAt    DateTime         @default(now())
+  rawPayload  Json?            // Original vendor payload for audit/debugging
+
+  tenant      Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  student     User             @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  device      WearableDevice?  @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, studentId, metricType, recordedAt])
+  @@index([tenantId, recordedAt])
+}
+
+enum EvaluationStatus {
+  MET
+  NOT_MET
+  NO_DATA
+  IN_PROGRESS
+}
+
+model TaskEvaluationResult {
+  id                  String               @id @default(uuid())
+  tenantId            String
+  studentId           String
+  timetableEntryId    String
+  benchmarkVersionId  String
+  evaluationDate      DateTime             @db.Date
+  status              EvaluationStatus
+  aggregatedValue     Decimal?             @db.Decimal(10, 2) // Calculated daily total/avg
+  thresholdSummary    String               // e.g. "Achieved 10,420 steps (Target: >= 8,000 steps)"
+  actualStartTime     DateTime?            // When student clicked Start Task in app
+  actualEndTime       DateTime?            // When student clicked End/Complete Task in app
+  actualDurationMins  Int?                 // Duration student performed the task in minutes
+  criticalEventsCount Int?                 @default(0) // How many times live data entered critical zone
+  criticalEventsLog   Json?                // Array of critical incidents logged during session
+  evaluatedAt         DateTime             @default(now())
+
+  tenant              Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  student             User                 @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  timetableEntry      TimetableAssignment  @relation(fields: [timetableEntryId], references: [id], onDelete: Cascade)
+  benchmarkVersion    BenchmarkVersion     @relation(fields: [benchmarkVersionId], references: [id], onDelete: Restrict)
+
+  @@unique([studentId, timetableEntryId, evaluationDate])
+  @@index([tenantId, evaluationDate, status])
+  @@index([studentId, evaluationDate])
+}
+
+// ==========================================
+// 7. SYSTEM AUDITABILITY & LOGS
+// ==========================================
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  tenantId    String?  // Null for platform Super Admin global actions
+  userId      String?
+  action      String   // e.g. "TENANT_CREATED", "USER_ROLE_UPDATED", "BENCHMARK_MODIFIED"
+  module      String   // e.g. "TENANTS", "AUTH", "TASKS", "BENCHMARKS"
+  details     Json?    // Detailed diff: { previous: {...}, next: {...} }
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  tenant      Tenant?  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, createdAt])
+  @@index([module, action])
+}
+
+// ==========================================
+// 8. PUBLIC REGISTRATIONS & APPROVAL WORKFLOW
+// ==========================================
+
+enum RegistrationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model RegistrationRequest {
+  id           String             @id @default(uuid())
+  tenantId     String
+  userTypeId   String
+  fullName     String
+  email        String
+  phone        String?
+  passwordHash String
+  profileData  Json?              // Custom dynamic fields data
+  status       RegistrationStatus @default(PENDING)
+  reviewNotes  String?
+  reviewedAt   DateTime?
+  reviewedById String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  tenant       Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userType     UserType           @relation(fields: [userTypeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, status])
+  @@index([tenantId, email])
+}
+
+// ==========================================
+// 9. PLATFORM SUBSCRIPTIONS & PAYMENTS
+// ==========================================
+
+enum SubscriptionTier {
+  STARTER
+  GROWTH
+  ENTERPRISE
+  CUSTOM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIAL
+  PAST_DUE
+  CANCELLED
+}
+
+model TenantSubscriptionPayment {
+  id             String             @id @default(uuid())
+  tenantId       String
+  amount         Decimal            @db.Decimal(10, 2)
+  currency       String             @default("USD")
+  planTier       SubscriptionTier   @default(STARTER)
+  status         SubscriptionStatus @default(ACTIVE)
+  billingCycle   String             @default("MONTHLY") // "MONTHLY" or "ANNUAL"
+  paymentMethod  String             @default("CARD")    // "CARD", "BANK_TRANSFER", "INVOICE", "CASH"
+  transactionRef String?
+  notes          String?
+  paidAt         DateTime           @default(now())
+  validUntil     DateTime
+  createdAt      DateTime           @default(now())
+
+  tenant         Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+}
+
+// ==========================================
+// 10. AD TILES & MOBILE CAROUSEL SLIDERS
+// ==========================================
+
+model AdBanner {
+  id          String   @id @default(uuid())
+  tenantId    String
+  title       String
+  imageUrl    String
+  targetUrl   String?
+  placement   String   @default("APP_DASHBOARD_CAROUSEL") // e.g. "APP_DASHBOARD_CAROUSEL"
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, isActive, sortOrder])
+}
+
