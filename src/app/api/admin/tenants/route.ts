@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma';
 import { FieldType, PlatformRole, TenantStatus } from '@prisma/client';
 import { logAuditEvent } from '@/lib/audit';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);

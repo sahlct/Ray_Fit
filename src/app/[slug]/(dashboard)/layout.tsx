@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { TenantSidebar } from "@/components/navigation/tenant-sidebar";
 import { getSession } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardRouteGroupLayout(props: {
   children: React.ReactNode;
   params: Promise<{ slug: string }>;

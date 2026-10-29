@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { logAuditEvent } from "@/lib/audit";
 import crypto from "crypto";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   req: NextRequest,
   props: { params: Promise<{ slug: string }> }

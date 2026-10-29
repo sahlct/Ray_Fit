@@ -17,6 +17,8 @@ import { formatDate } from "@/lib/utils";
 import { TenantsManager } from "@/components/admin/tenants-manager";
 import { ThemeToggle } from "@/components/navigation/theme-toggle";
 
+export const dynamic = "force-dynamic";
+
 export default async function SuperAdminPage() {
   const tenants = await prisma.tenant.findMany({
     include: {

@@ -20,6 +20,8 @@ import { prisma } from "@/lib/prisma";
 import { AdminHeader } from "@/components/navigation/admin-header";
 import { formatDate, formatTime } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export default async function SuperAdminDashboardPage() {
   const [tenants, totalStudents, totalWearables, totalEvaluations, recentAuditLogs, subscriptionPayments] =
     await Promise.all([

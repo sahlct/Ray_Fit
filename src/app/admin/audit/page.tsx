@@ -3,6 +3,8 @@ import { History, ShieldAlert, Building2, User } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { formatDate, formatTime } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export default async function GlobalAuditPage() {
   const auditLogs = await prisma.auditLog.findMany({
     include: {

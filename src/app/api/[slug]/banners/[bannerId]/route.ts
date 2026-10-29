@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { logAuditEvent } from "@/lib/audit";
 
+export const dynamic = "force-dynamic";
+
 export async function PUT(
   req: NextRequest,
   props: { params: Promise<{ slug: string; bannerId: string }> }
