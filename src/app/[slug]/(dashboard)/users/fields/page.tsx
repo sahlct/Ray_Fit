@@ -273,17 +273,17 @@ export default function CustomFieldBuilderPage({
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
         {/* Info Banner */}
-        {/* <div className="p-4 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-300 text-xs flex items-center justify-between">
+        {/* <div className="p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-300 text-xs flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Sparkles className="w-5 h-5 shrink-0 text-teal-400" />
+            <Sparkles className="w-5 h-5 shrink-0 text-orange-400" />
             <div>
               <span className="font-bold text-white">Extensible Dynamic Schema Architecture:</span>{" "}
               Add unlimited custom user types and profile fields. Data is saved in structured JSONB with zero database migration downtime.
             </div>
           </div>
-          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-teal-700 text-white">
+          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-orange-600 text-white">
             EAV-JSONB Hybrid
           </span>
         </div> */}
@@ -297,7 +297,7 @@ export default function CustomFieldBuilderPage({
                   key={ut.id}
                   onClick={() => setSelectedTypeId(ut.id)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${selectedTypeId === ut.id
-                    ? "bg-teal-600 text-white shadow-sm font-bold"
+                    ? "bg-orange-500 text-white shadow-sm font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                     }`}
                 >
@@ -322,7 +322,7 @@ export default function CustomFieldBuilderPage({
 
           <Button
             onClick={() => setIsFieldModalOpen(true)}
-            className="gap-2 bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-sm"
+            className="gap-2 bg-orange-500 hover:bg-orange-500 text-white text-xs font-bold shadow-sm"
           >
             <Plus className="w-4 h-4" />
             <span>Add Field to {activeUserType?.name || "Type"}</span>
@@ -402,7 +402,7 @@ export default function CustomFieldBuilderPage({
                       <td className="py-4 px-6 font-bold text-slate-900 dark:text-white">
                         {f.label}
                       </td>
-                      <td className="py-4 px-6 text-xs font-mono text-teal-700 dark:text-teal-400">
+                      <td className="py-4 px-6 text-xs font-mono text-orange-600 dark:text-orange-400">
                         {f.fieldKey}
                       </td>
                       <td className="py-4 px-6">
@@ -513,7 +513,7 @@ export default function CustomFieldBuilderPage({
                 onChange={(e) =>
                   setFieldData((prev) => ({ ...prev, fieldType: e.target.value }))
                 }
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-orange-500"
               >
                 <option value="TEXT">Text String</option>
                 <option value="NUMBER">Numeric Value</option>
@@ -568,7 +568,7 @@ export default function CustomFieldBuilderPage({
               onChange={(e) =>
                 setFieldData((prev) => ({ ...prev, isRequired: e.target.checked }))
               }
-              className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700"
+              className="w-4 h-4 rounded text-orange-500 focus:ring-orange-500 bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700"
             />
             <label htmlFor="isRequired" className="text-xs font-semibold text-slate-700 dark:text-slate-200">
               Mandatory Field (Required on user creation)
@@ -586,7 +586,7 @@ export default function CustomFieldBuilderPage({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-teal-600 hover:bg-teal-500 text-white font-bold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-bold"
             >
               {isSubmitting ? "Adding..." : "Add Custom Field"}
             </Button>
@@ -651,7 +651,7 @@ export default function CustomFieldBuilderPage({
               <select
                 value={newTypeIcon}
                 onChange={(e) => setNewTypeIcon(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-orange-500"
               >
                 <option value="User">User Profile</option>
                 <option value="HeartPulse">Heart Pulse (Clinical)</option>
@@ -679,7 +679,7 @@ export default function CustomFieldBuilderPage({
             </Button>
             <Button
               type="submit"
-              className="bg-teal-600 hover:bg-teal-500 text-white font-bold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-bold"
             >
               Create User Type
             </Button>
@@ -702,7 +702,7 @@ export default function CustomFieldBuilderPage({
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-slate-900 dark:text-white text-sm">{ut.name}</span>
-                    <span className="text-[10px] font-mono text-teal-700 dark:text-teal-400">/{ut.slug}</span>
+                    <span className="text-[10px] font-mono text-orange-600 dark:text-orange-400">/{ut.slug}</span>
                     {ut.isSystem ? (
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">
                         System Core
@@ -745,7 +745,7 @@ export default function CustomFieldBuilderPage({
                 setIsManageTypesModalOpen(false);
                 setIsNewTypeModalOpen(true);
               }}
-              className="gap-1.5 bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold"
+              className="gap-1.5 bg-orange-500 hover:bg-orange-500 text-white text-xs font-bold"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create Another User Type</span>

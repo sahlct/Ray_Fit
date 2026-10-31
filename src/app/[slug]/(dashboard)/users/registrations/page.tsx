@@ -163,12 +163,12 @@ export default function TenantRegistrationsPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col p-8 max-w-7xl mx-auto w-full space-y-8">
+    <div className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-8">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800 gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">
               Self-Serve Onboarding
             </span>
             <span className="text-xs text-slate-400">•</span>
@@ -200,7 +200,7 @@ export default function TenantRegistrationsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
-              <Share2 className="w-4 h-4 text-teal-500" />
+              <Share2 className="w-4 h-4 text-orange-500" />
               <span>Shareable Registration Portals</span>
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -211,10 +211,10 @@ export default function TenantRegistrationsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* General Link Card */}
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm hover:border-teal-500/40 transition-all flex flex-col justify-between">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm hover:border-orange-500/40 transition-all flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-teal-500/10 text-teal-600 dark:text-teal-400">
+                <span className="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-orange-500/10 text-orange-500 dark:text-orange-400">
                   Universal Portal
                 </span>
                 <span className="text-[11px] text-slate-400">All Roles</span>
@@ -239,7 +239,7 @@ export default function TenantRegistrationsPage() {
                     "general"
                   )
                 }
-                className="flex-1 h-9 rounded-xl text-xs font-bold bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 gap-1.5"
+                className="flex-1 h-9 rounded-xl text-xs font-bold bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-300 gap-1.5"
               >
                 {copiedId === "general" ? (
                   <>
@@ -274,7 +274,7 @@ export default function TenantRegistrationsPage() {
             return (
               <div
                 key={ut.id}
-                className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm hover:border-teal-500/40 transition-all flex flex-col justify-between"
+                className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm hover:border-orange-500/40 transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between">
@@ -300,7 +300,7 @@ export default function TenantRegistrationsPage() {
                 <div className="pt-4 flex items-center gap-2 mt-2">
                   <Button
                     onClick={() => handleCopyLink(linkUrl, ut.id)}
-                    className="flex-1 h-9 rounded-xl text-xs font-bold bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 gap-1.5"
+                    className="flex-1 h-9 rounded-xl text-xs font-bold bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-300 gap-1.5"
                   >
                     {copiedId === ut.id ? (
                       <>
@@ -356,7 +356,7 @@ export default function TenantRegistrationsPage() {
                   setStatusFilter(e.target.value);
                   setPage(1);
                 }}
-                className="h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-teal-500 cursor-pointer"
+                className="h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer"
               >
                 <option value="ALL">All Statuses</option>
                 <option value="PENDING">Pending Review</option>
@@ -370,7 +370,7 @@ export default function TenantRegistrationsPage() {
                   setUserTypeFilter(e.target.value);
                   setPage(1);
                 }}
-                className="h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-teal-500 cursor-pointer"
+                className="h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer"
               >
                 <option value="ALL">All User Types</option>
                 {userTypes.map((ut) => (
@@ -387,7 +387,7 @@ export default function TenantRegistrationsPage() {
         <div className="overflow-x-auto min-h-[300px]">
           {loading ? (
             <div className="flex flex-col items-center justify-center p-16 text-slate-400 gap-3">
-              <RefreshCw className="w-6 h-6 animate-spin text-teal-500" />
+              <RefreshCw className="w-6 h-6 animate-spin text-orange-500" />
               <span className="text-xs">Loading registration submissions...</span>
             </div>
           ) : requests.length === 0 ? (
@@ -435,7 +435,7 @@ export default function TenantRegistrationsPage() {
                       </td>
 
                       <td className="py-3 px-4">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">
                           {r.userType?.name || "Member"}
                         </span>
                       </td>
@@ -548,7 +548,7 @@ export default function TenantRegistrationsPage() {
                 </div>
                 <div>
                   <span className="text-slate-400">Target User Type:</span>{" "}
-                  <span className="font-bold text-teal-600 dark:text-teal-400">
+                  <span className="font-bold text-orange-500 dark:text-orange-400">
                     {activeModalRequest.userType?.name}
                   </span>
                 </div>
@@ -558,7 +558,7 @@ export default function TenantRegistrationsPage() {
             {/* Dynamic Custom Fields Values */}
             <div className="space-y-2">
               <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+                <Sparkles className="w-3.5 h-3.5 text-orange-500" />
                 <span>Submitted Custom Fields for {activeModalRequest.userType?.name}</span>
               </h4>
 
@@ -618,7 +618,7 @@ export default function TenantRegistrationsPage() {
                 value={reviewNotes}
                 onChange={(e) => setReviewNotes(e.target.value)}
                 placeholder="Optional notes or instructions for the applicant..."
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
 
@@ -657,7 +657,7 @@ export default function TenantRegistrationsPage() {
                       type="button"
                       disabled={submittingAction}
                       onClick={() => handleApproveReject("APPROVE")}
-                      className="bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-bold gap-1.5 shadow-md"
+                      className="bg-orange-500 hover:bg-orange-400 text-slate-950 text-xs font-bold gap-1.5 shadow-md"
                     >
                       {submittingAction ? (
                         <>

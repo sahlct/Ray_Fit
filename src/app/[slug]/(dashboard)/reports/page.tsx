@@ -240,7 +240,7 @@ export default function ReportsAnalyticsPage({
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-8 print:p-0">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-8 print:p-0">
         {/* Top Export & Action Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -266,7 +266,7 @@ export default function ReportsAnalyticsPage({
             <Button
               size="sm"
               onClick={handleExportCSV}
-              className="gap-2 bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-md shadow-teal-950"
+              className="gap-2 bg-orange-500 hover:bg-orange-500 text-white text-xs font-bold shadow-md shadow-orange-950"
             >
               <Download className="w-4 h-4" />
               <span>Export CSV</span>
@@ -339,7 +339,7 @@ export default function ReportsAnalyticsPage({
               onClick={() => setStatusFilter("ALL")}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 statusFilter === "ALL"
-                  ? "bg-teal-600 text-white shadow font-bold"
+                  ? "bg-orange-500 text-white shadow font-bold"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
@@ -384,7 +384,7 @@ export default function ReportsAnalyticsPage({
               placeholder="Search student or task..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs focus:ring-2 focus:ring-teal-500"
+              className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs focus:ring-2 focus:ring-orange-500"
             />
           </div>
         </div>
@@ -424,7 +424,7 @@ export default function ReportsAnalyticsPage({
                       <td className="py-4 px-6 font-bold text-slate-900 dark:text-white">
                         <Link
                           href={`/${slug}/reports/${ev.id}`}
-                          className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                          className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
                         >
                           {ev.student.fullName}
                         </Link>
@@ -438,7 +438,7 @@ export default function ReportsAnalyticsPage({
                         <span className="font-semibold text-slate-900 dark:text-white text-xs block">
                           {ev.timetableEntry.assignment.task.title}
                         </span>
-                        <span className="text-[10px] text-teal-600 dark:text-teal-400 font-mono">
+                        <span className="text-[10px] text-orange-500 dark:text-orange-400 font-mono">
                           {ev.timetableEntry.assignment.task.metricType}
                         </span>
                       </td>
@@ -455,7 +455,7 @@ export default function ReportsAnalyticsPage({
                       <td className="py-4 px-6 text-right">
                         <Link
                           href={`/${slug}/reports/${ev.id}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/30 text-xs font-semibold transition-all"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/30 text-xs font-semibold transition-all"
                           title="View Full Evaluation Report"
                         >
                           <Eye className="w-3.5 h-3.5" />

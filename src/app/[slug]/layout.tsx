@@ -33,7 +33,7 @@ export default async function TenantRootLayout(props: {
           </p>
           <a
             href="/"
-            className="inline-flex px-4 py-2 rounded-lg bg-teal-600 text-white font-medium text-sm hover:bg-teal-500"
+            className="inline-flex px-4 py-2 rounded-lg bg-orange-500 text-white font-medium text-sm hover:bg-orange-500"
           >
             Return to Portal Home
           </a>

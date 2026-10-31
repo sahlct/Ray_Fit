@@ -178,12 +178,12 @@ export default function SuperAdminSubscriptionsPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col p-8 max-w-7xl mx-auto w-full space-y-8">
+    <div className="flex-1 flex flex-col p-4 sm:p-6 lg:p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6 sm:space-y-8">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800 gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
               Multi-Tenant Monetization
             </span>
             <span className="text-xs text-slate-400">•</span>
@@ -203,7 +203,7 @@ export default function SuperAdminSubscriptionsPage() {
           <ThemeToggle />
           <Button
             onClick={() => openPaymentModal()}
-            className="bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs gap-2 shadow-lg transition-all"
+            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-xs gap-2 shadow-md shadow-orange-500/20 transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>Record Subscription Payment</span>
@@ -212,7 +212,7 @@ export default function SuperAdminSubscriptionsPage() {
       </div>
 
       {/* Plan Tiers Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Starter Tier</span>
@@ -225,10 +225,10 @@ export default function SuperAdminSubscriptionsPage() {
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Growth Tier</span>
-            <span className="text-xs font-extrabold px-2 py-0.5 rounded bg-teal-500/10 text-teal-500">$699/mo</span>
+            <span className="text-xs font-extrabold px-2 py-0.5 rounded bg-orange-500/10 text-orange-500">$699/mo</span>
           </div>
           <div className="text-2xl font-black text-slate-900 dark:text-white mt-2">500 Students</div>
-          <p className="text-xs text-teal-600 dark:text-teal-400 mt-1">250 smart bands, dynamic benchmarks</p>
+          <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">250 smart bands, dynamic benchmarks</p>
         </div>
 
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm">
@@ -275,7 +275,7 @@ export default function SuperAdminSubscriptionsPage() {
                   setStatusFilter(e.target.value);
                   setPage(1);
                 }}
-                className="h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-teal-500 cursor-pointer"
+                className="h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer"
               >
                 <option value="ALL">All Statuses</option>
                 <option value="ACTIVE">Active</option>
@@ -289,7 +289,7 @@ export default function SuperAdminSubscriptionsPage() {
                   setPlanFilter(e.target.value);
                   setPage(1);
                 }}
-                className="h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-teal-500 cursor-pointer"
+                className="h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer"
               >
                 <option value="ALL">All Plans</option>
                 <option value="STARTER">Starter</option>
@@ -304,7 +304,7 @@ export default function SuperAdminSubscriptionsPage() {
         <div className="overflow-x-auto min-h-[300px]">
           {loading ? (
             <div className="flex flex-col items-center justify-center p-16 text-slate-400 gap-3">
-              <RefreshCw className="w-6 h-6 animate-spin text-teal-500" />
+              <RefreshCw className="w-6 h-6 animate-spin text-orange-500" />
               <span className="text-xs">Loading subscription accounts...</span>
             </div>
           ) : tenants.length === 0 ? (
@@ -339,7 +339,7 @@ export default function SuperAdminSubscriptionsPage() {
                     "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
                   if (planUpper === "GROWTH")
                     planBadgeColor =
-                      "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20";
+                      "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20";
                   if (planUpper === "ENTERPRISE")
                     planBadgeColor =
                       "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20";
@@ -427,7 +427,7 @@ export default function SuperAdminSubscriptionsPage() {
                       <td className="py-3 px-4 text-right">
                         <button
                           onClick={() => openPaymentModal(t)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-teal-500/10 text-teal-600 dark:text-teal-400 hover:bg-teal-500/20 transition-all cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 transition-all cursor-pointer"
                         >
                           <CreditCard className="w-3.5 h-3.5" />
                           <span>Pay / Renew</span>
@@ -461,7 +461,7 @@ export default function SuperAdminSubscriptionsPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
-                <Receipt className="w-4 h-4 text-teal-500" />
+                <Receipt className="w-4 h-4 text-orange-500" />
                 <span>Recent Global Subscription Invoices</span>
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -474,7 +474,7 @@ export default function SuperAdminSubscriptionsPage() {
             {recentPayments.map((p) => (
               <div key={p.id} className="py-3 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-500 font-bold text-xs">
+                  <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 font-bold text-xs">
                     $
                   </div>
                   <div>
@@ -522,7 +522,7 @@ export default function SuperAdminSubscriptionsPage() {
               value={formData.tenantId}
               onChange={(e) => setFormData({ ...formData, tenantId: e.target.value })}
               required
-              className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="">-- Choose Organization --</option>
               {tenants.map((t) => (
@@ -541,7 +541,7 @@ export default function SuperAdminSubscriptionsPage() {
               <select
                 value={formData.planTier}
                 onChange={(e) => handlePlanTierChange(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="STARTER">Starter ($299)</option>
                 <option value="GROWTH">Growth ($699)</option>
@@ -563,7 +563,7 @@ export default function SuperAdminSubscriptionsPage() {
                   value={formData.amount}
                   onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                   required
-                  className="w-full h-10 pl-7 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full h-10 pl-7 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
             </div>
@@ -577,7 +577,7 @@ export default function SuperAdminSubscriptionsPage() {
               <select
                 value={formData.billingCycle}
                 onChange={(e) => setFormData({ ...formData, billingCycle: e.target.value })}
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="MONTHLY">Monthly</option>
                 <option value="QUARTERLY">Quarterly</option>
@@ -592,7 +592,7 @@ export default function SuperAdminSubscriptionsPage() {
               <select
                 value={formData.paymentMethod}
                 onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="STRIPE">Stripe Gateway</option>
                 <option value="CARD">Credit / Debit Card</option>
@@ -612,7 +612,7 @@ export default function SuperAdminSubscriptionsPage() {
                 max="36"
                 value={formData.durationMonths}
                 onChange={(e) => setFormData({ ...formData, durationMonths: e.target.value })}
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
           </div>
@@ -626,7 +626,7 @@ export default function SuperAdminSubscriptionsPage() {
               value={formData.transactionRef}
               onChange={(e) => setFormData({ ...formData, transactionRef: e.target.value })}
               placeholder="e.g. INV-2026-001 or TXN-99812"
-              className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 font-mono"
+              className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 font-mono"
             />
           </div>
 
@@ -639,7 +639,7 @@ export default function SuperAdminSubscriptionsPage() {
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               placeholder="Payment remarks or invoice references..."
-              className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
 
@@ -654,7 +654,7 @@ export default function SuperAdminSubscriptionsPage() {
             <Button
               type="submit"
               disabled={submitting}
-              className="bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs gap-2"
+              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-xs gap-2 shadow-md shadow-orange-500/20"
             >
               {submitting ? (
                 <>

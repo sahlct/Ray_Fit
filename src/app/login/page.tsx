@@ -56,19 +56,23 @@ export default function PlatformSuperAdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between p-6 selection:bg-teal-500 selection:text-white transition-colors">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between p-6 selection:bg-orange-500 selection:text-white transition-colors">
       {/* Background glow */}
-      <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Top Bar */}
       <div className="relative z-10 flex items-center justify-between max-w-5xl mx-auto w-full">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center text-slate-950 font-bold shadow-md">
-            <Activity className="w-5 h-5 text-slate-950" />
+          <div className="w-8 h-8 rounded-lg overflow-hidden shadow-md border border-slate-200 dark:border-slate-700 bg-slate-900 shrink-0">
+            <img
+              src="/brand/png/raysfit-icon-76.png"
+              alt="Rays Fit"
+              className="w-full h-full object-cover"
+            />
           </div>
           <span className="font-extrabold text-slate-900 dark:text-white tracking-wider">
-            RAY FIT
+            RAYS FIT
           </span>
         </Link>
 
@@ -88,13 +92,13 @@ export default function PlatformSuperAdminLoginPage() {
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl p-8 shadow-xl dark:shadow-2xl">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-teal-500/20 border border-teal-500/40 text-teal-600 dark:text-teal-400 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-teal-500/10">
-              <ShieldAlert className="w-7 h-7 text-teal-600 dark:text-teal-400" />
+            <div className="w-14 h-14 rounded-2xl bg-orange-500/20 border border-orange-500/40 text-orange-500 dark:text-orange-400 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-orange-500/10">
+              <ShieldAlert className="w-7 h-7 text-orange-500 dark:text-orange-400" />
             </div>
             <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               Master Platform Login
             </h1>
-            <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold uppercase tracking-wider mt-1.5">
+            <p className="text-xs text-orange-500 dark:text-orange-400 font-semibold uppercase tracking-wider mt-1.5">
               Super Admin Infrastructure Access • /login
             </p>
           </div>
@@ -152,7 +156,7 @@ export default function PlatformSuperAdminLoginPage() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full mt-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold h-11 transition-all"
+              className="w-full mt-2 bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold h-11 transition-all"
             >
               {isLoading ? "Verifying Credentials..." : "Access Super Admin Portal"}
             </Button>
@@ -164,7 +168,7 @@ export default function PlatformSuperAdminLoginPage() {
           <span>Looking for your school login? </span>
           <Link
             href="/green-valley-school/login"
-            className="text-teal-600 dark:text-teal-400 hover:underline font-medium inline-flex items-center gap-0.5"
+            className="text-orange-500 dark:text-orange-400 hover:underline font-medium inline-flex items-center gap-0.5"
           >
             Go to School Portal <ExternalLink className="w-3 h-3 ml-0.5" />
           </Link>
@@ -173,7 +177,7 @@ export default function PlatformSuperAdminLoginPage() {
 
       {/* Footer */}
       <footer className="relative z-10 text-center text-xs text-slate-500 dark:text-slate-600">
-        <p>© 2026 Ray Fit Platform. Master Administration Portal.</p>
+        <p>© 2026 Rays Fit Platform. Master Administration Portal.</p>
       </footer>
     </div>
   );

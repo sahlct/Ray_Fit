@@ -19,19 +19,19 @@
 
     --popover: #ffffff;
     --popover-foreground: #0f172a;
-    --primary: #0d9488;
+    --primary: #FF6B2C;
     --primary-foreground: #ffffff;
     --secondary: #f1f5f9;
     --secondary-foreground: #0f172a;
     --muted: #f1f5f9;
     --muted-foreground: #64748b;
-    --accent: #f1f5f9;
-    --accent-foreground: #0f172a;
+    --accent: #FF2D78;
+    --accent-foreground: #ffffff;
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
     --border: #e2e8f0;
     --input: #e2e8f0;
-    --ring: #0d9488;
+    --ring: #FF6B2C;
     --radius: 0.75rem;
 
     /* Benchmark status tokens */
@@ -51,32 +51,32 @@
   .dark {
     --background: #020617;
     --foreground: #f8fafc;
-    --card: rgba(15, 23, 42, 0.85);
+    --card: rgba(20, 24, 31, 0.9);
     --card-foreground: #f8fafc;
     --card-border: rgba(255, 255, 255, 0.08);
     --card-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.4);
-    --card-hover-border: rgba(20, 184, 166, 0.35);
-    --card-hover-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.6);
+    --card-hover-border: rgba(255, 107, 44, 0.45);
+    --card-hover-shadow: 0 12px 32px -4px rgba(255, 45, 120, 0.15);
 
-    --panel-bg: rgba(15, 23, 42, 0.85);
+    --panel-bg: rgba(20, 24, 31, 0.9);
     --panel-border: rgba(255, 255, 255, 0.08);
     --panel-shadow: none;
 
-    --popover: #0f172a;
+    --popover: #14181F;
     --popover-foreground: #f8fafc;
-    --primary: #14b8a6;
-    --primary-foreground: #042f2e;
+    --primary: #FF6B2C;
+    --primary-foreground: #ffffff;
     --secondary: #1e293b;
     --secondary-foreground: #f8fafc;
     --muted: #1e293b;
     --muted-foreground: #94a3b8;
-    --accent: #1e293b;
-    --accent-foreground: #f8fafc;
+    --accent: #FF2D78;
+    --accent-foreground: #ffffff;
     --destructive: #f43f5e;
     --destructive-foreground: #ffffff;
     --border: rgba(255, 255, 255, 0.08);
     --input: rgba(255, 255, 255, 0.12);
-    --ring: #14b8a6;
+    --ring: #FF6B2C;
 
     /* Benchmark status tokens */
     --badge-met-bg: rgba(52, 211, 153, 0.15);
@@ -166,4 +166,63 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 0.5);
+}
+
+/* ========================================================
+   GLOBAL PRINT TEMPLATE RULES (Transforms all prints to official clean documents)
+   ======================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 14mm;
+  }
+
+  *, *:before, *:after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 10pt !important;
+    line-height: 1.35 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  aside, header, nav, button, .print\:hidden {
+    display: none !important;
+  }
+
+  .ml-64 {
+    margin-left: 0 !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .glass-card, .glass-panel {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    color: #0f172a !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 12px !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  a[href]:after {
+    content: none !important;
+  }
 }

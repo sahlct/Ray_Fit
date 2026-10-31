@@ -46,12 +46,12 @@ export default async function SuperAdminPage() {
   const totalEvaluations = await prisma.taskEvaluationResult.count();
 
   return (
-    <div className="flex-1 flex flex-col p-8 max-w-7xl mx-auto w-full space-y-8">
+    <div className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-8">
       {/* Top Header */}
       <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800">
         <div>
           <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-            Ray Fit Platform Super Admin
+            Rays Fit Platform Super Admin
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Global multi-tenant governance, organization lifecycle, and enterprise infrastructure
@@ -62,7 +62,7 @@ export default async function SuperAdminPage() {
           <ThemeToggle />
           <Link
             href="/admin/tenants/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs shadow-lg transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-xs shadow-md shadow-orange-500/20 transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>Provision New School</span>
@@ -79,7 +79,7 @@ export default async function SuperAdminPage() {
           <div className="text-3xl font-black text-slate-900 dark:text-white mt-2">
             {totalSchools}
           </div>
-          <p className="text-xs text-teal-600 dark:text-teal-400 mt-1">Isolated database domains</p>
+          <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">Isolated database domains</p>
         </div>
 
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm dark:shadow-none">

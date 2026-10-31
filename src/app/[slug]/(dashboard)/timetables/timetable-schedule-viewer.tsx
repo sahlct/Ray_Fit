@@ -16,9 +16,11 @@ import {
   Square,
   AlertTriangle,
   AlertOctagon,
+  X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { TablePagination } from "@/components/ui/table-pagination";
 import { formatDate } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -86,7 +88,12 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
   const [timetables, setTimetables] = useState<TimetableEntry[]>(initialTimetables);
   const [selectedClassId, setSelectedClassId] = useState<string>("ALL");
   const [selectedBatchId, setSelectedBatchId] = useState<string>("ALL");
+  const [selectedDate, setSelectedDate] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+  // Pagination State
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
 
   // Selection & Deletion State
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -96,6 +103,17 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
   useEffect(() => {
     setTimetables(initialTimetables);
   }, [initialTimetables]);
+
+  // Helper to extract YYYY-MM-DD from an entry's scheduled date
+  const getEntryDateString = (scheduledDate: string | Date | null | undefined): string => {
+    if (!scheduledDate) return "";
+    const d = typeof scheduledDate === "string" ? new Date(scheduledDate) : scheduledDate;
+    if (isNaN(d.getTime())) return "";
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   // Extract batches available based on selected class
   const availableBatches = useMemo(() => {
@@ -120,6 +138,7 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
   // When class filter changes, reset batch if current batch doesn't belong to the new class
   const handleClassChange = (classId: string) => {
     setSelectedClassId(classId);
+    setPage(1);
     if (classId === "ALL") {
       setSelectedBatchId("ALL");
     } else {
@@ -148,7 +167,21 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
         return false;
       }
 
-      // 3. Search query
+      // 3. Filter by Scheduled Date (matches either local date or UTC ISO date string)
+      if (selectedDate) {
+        const localDateStr = getEntryDateString(tt.scheduledDate);
+        const utcDateStr =
+          typeof tt.scheduledDate === "string"
+            ? tt.scheduledDate.slice(0, 10)
+            : tt.scheduledDate instanceof Date
+            ? tt.scheduledDate.toISOString().slice(0, 10)
+            : "";
+        if (localDateStr !== selectedDate && utcDateStr !== selectedDate) {
+          return false;
+        }
+      }
+
+      // 4. Search query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matchTitle = tt.assignment.task.title.toLowerCase().includes(q);
@@ -162,15 +195,34 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
 
       return true;
     });
-  }, [timetables, selectedClassId, selectedBatchId, searchQuery]);
+  }, [timetables, selectedClassId, selectedBatchId, selectedDate, searchQuery]);
+
+  // Pagination calculations
+  const totalPages = Math.max(1, Math.ceil(filteredTimetables.length / limit));
+
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
+
+  const paginatedTimetables = useMemo(() => {
+    const start = (page - 1) * limit;
+    return filteredTimetables.slice(start, start + limit);
+  }, [filteredTimetables, page, limit]);
 
   const hasActiveFilters =
-    selectedClassId !== "ALL" || selectedBatchId !== "ALL" || searchQuery.trim() !== "";
+    selectedClassId !== "ALL" ||
+    selectedBatchId !== "ALL" ||
+    selectedDate !== "" ||
+    searchQuery.trim() !== "";
 
   const handleResetFilters = () => {
     setSelectedClassId("ALL");
     setSelectedBatchId("ALL");
+    setSelectedDate("");
     setSearchQuery("");
+    setPage(1);
   };
 
   const selectedClassName =
@@ -178,27 +230,31 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
       ? classes.find((c) => c.id === selectedClassId)?.name
       : null;
 
-  // Selection Logic
-  const allFilteredSelected =
-    filteredTimetables.length > 0 &&
-    filteredTimetables.every((tt) => selectedIds.has(tt.id));
+  // Selection Logic for current page
+  const allCurrentPageSelected =
+    paginatedTimetables.length > 0 &&
+    paginatedTimetables.every((tt) => selectedIds.has(tt.id));
 
-  const toggleSelectAllFiltered = () => {
-    if (allFilteredSelected) {
-      // Unselect all currently filtered
+  const toggleSelectCurrentPage = () => {
+    if (allCurrentPageSelected) {
+      // Unselect all currently visible on page
       setSelectedIds((prev) => {
         const next = new Set(prev);
-        filteredTimetables.forEach((tt) => next.delete(tt.id));
+        paginatedTimetables.forEach((tt) => next.delete(tt.id));
         return next;
       });
     } else {
-      // Select all currently filtered
+      // Select all currently visible on page
       setSelectedIds((prev) => {
         const next = new Set(prev);
-        filteredTimetables.forEach((tt) => next.add(tt.id));
+        paginatedTimetables.forEach((tt) => next.add(tt.id));
         return next;
       });
     }
+  };
+
+  const selectAllFiltered = () => {
+    setSelectedIds(new Set(filteredTimetables.map((tt) => tt.id)));
   };
 
   const toggleSelectOne = (id: string) => {
@@ -310,7 +366,7 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
           {hasActiveFilters && (
             <Badge
               variant="outline"
-              className="text-xs font-semibold py-1 px-2.5 text-teal-600 dark:text-teal-400 border-teal-500/30"
+              className="text-xs font-semibold py-1 px-2.5 text-orange-500 dark:text-orange-400 border-orange-500/30"
             >
               Showing {filteredTimetables.length} of {timetables.length}
             </Badge>
@@ -324,7 +380,7 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
       {/* Class & Batch Filter Bar */}
       <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center gap-3 bg-slate-50/50 dark:bg-slate-900/40">
         <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
-          <Filter className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+          <Filter className="w-4 h-4 text-orange-500 dark:text-orange-400" />
           <span>Filters:</span>
         </div>
 
@@ -335,7 +391,7 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
             <select
               value={selectedClassId}
               onChange={(e) => handleClassChange(e.target.value)}
-              className="w-full h-9 pl-9 pr-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full h-9 pl-9 pr-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="ALL">All Classes ({classes.length})</option>
               {classes.map((cls) => (
@@ -353,8 +409,11 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
             <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
             <select
               value={selectedBatchId}
-              onChange={(e) => setSelectedBatchId(e.target.value)}
-              className="w-full h-9 pl-9 pr-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+              onChange={(e) => {
+                setSelectedBatchId(e.target.value);
+                setPage(1);
+              }}
+              className="w-full h-9 pl-9 pr-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="ALL">
                 {selectedClassId === "ALL"
@@ -370,15 +429,48 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
           </div>
         </div>
 
-        {/* 3. Search Field */}
+        {/* 3. Calendar Date Picker Filter */}
+        <div className="flex items-center gap-2 min-w-[170px] flex-1 sm:flex-initial">
+          <div className="relative w-full">
+            <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-orange-500 pointer-events-none" />
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => {
+                setSelectedDate(e.target.value);
+                setPage(1);
+              }}
+              className="w-full h-9 pl-9 pr-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer shadow-xs"
+              title="Filter by Scheduled Date"
+            />
+            {selectedDate && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedDate("");
+                  setPage(1);
+                }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                title="Clear date filter"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* 4. Search Field */}
         <div className="relative flex-1 min-w-[180px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
           <input
             type="text"
             placeholder="Search task or batch..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-9 pl-8 pr-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setPage(1);
+            }}
+            className="w-full h-9 pl-8 pr-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
         </div>
 
@@ -396,14 +488,24 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
 
       {/* Bulk Action Bar (when rows are selected) */}
       {selectedIds.size > 0 && (
-        <div className="p-3 bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800/80 rounded-xl flex items-center justify-between shadow-sm animate-in fade-in duration-200">
-          <div className="flex items-center gap-2 text-xs font-bold text-teal-900 dark:text-teal-200">
-            <span className="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center text-[10px]">
+        <div className="p-3 bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-sm animate-in fade-in duration-200">
+          <div className="flex items-center gap-2 text-xs font-bold text-orange-800 dark:text-orange-200">
+            <span className="w-5 h-5 rounded-full bg-orange-500 text-white flex items-center justify-center text-[10px]">
               {selectedIds.size}
             </span>
             <span>
               {selectedIds.size} scheduled {selectedIds.size === 1 ? "entry" : "entries"} selected
             </span>
+            {filteredTimetables.length > paginatedTimetables.length &&
+              selectedIds.size < filteredTimetables.length && (
+                <button
+                  type="button"
+                  onClick={selectAllFiltered}
+                  className="underline ml-2 text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-200 font-semibold cursor-pointer"
+                >
+                  Select all {filteredTimetables.length} filtered entries
+                </button>
+              )}
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -444,10 +546,14 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
                 <th className="py-3.5 px-4 w-10 text-center">
                   <input
                     type="checkbox"
-                    checked={allFilteredSelected}
-                    onChange={toggleSelectAllFiltered}
-                    className="rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer h-4 w-4"
-                    title="Select all visible entries"
+                    checked={allCurrentPageSelected}
+                    onChange={toggleSelectCurrentPage}
+                    className="rounded border-slate-300 text-orange-500 focus:ring-orange-500 cursor-pointer h-4 w-4"
+                    title={
+                      allCurrentPageSelected
+                        ? "Deselect all entries on current page"
+                        : "Select all entries on current page"
+                    }
                   />
                 </th>
                 <th className="py-3.5 px-4 w-12">#</th>
@@ -462,8 +568,8 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-              {filteredTimetables.length > 0 ? (
-                filteredTimetables.map((tt, idx) => {
+              {paginatedTimetables.length > 0 ? (
+                paginatedTimetables.map((tt, idx) => {
                   const task = tt.assignment.task;
                   const bm = tt.benchmarkVersion;
                   const batch = tt.assignment.batch;
@@ -480,7 +586,7 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
                       key={tt.id}
                       className={`transition-colors ${
                         isSelected
-                          ? "bg-teal-50/60 dark:bg-teal-950/20"
+                          ? "bg-orange-50 dark:bg-orange-950/20"
                           : "hover:bg-slate-50 dark:hover:bg-slate-800/40"
                       } ${isDeleting ? "opacity-50 pointer-events-none" : ""}`}
                     >
@@ -489,12 +595,12 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => toggleSelectOne(tt.id)}
-                          className="rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer h-4 w-4"
+                          className="rounded border-slate-300 text-orange-500 focus:ring-orange-500 cursor-pointer h-4 w-4"
                         />
                       </td>
 
                       <td className="py-4 px-4 text-xs text-slate-400 font-mono">
-                        #{idx + 1}
+                        #{(page - 1) * limit + idx + 1}
                       </td>
 
                       <td className="py-4 px-6 font-bold text-slate-900 dark:text-white">
@@ -505,7 +611,7 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
                         <div className="font-semibold text-slate-900 dark:text-white">
                           {task.title}
                         </div>
-                        <span className="text-[11px] font-mono text-teal-600 dark:text-teal-400">
+                        <span className="text-[11px] font-mono text-orange-500 dark:text-orange-400">
                           {task.metricType} ({task.unit})
                         </span>
                       </td>
@@ -520,8 +626,8 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
                       </td>
 
                       <td className="py-4 px-6 text-xs">
-                        <div className="flex items-center gap-1 font-semibold text-teal-700 dark:text-teal-300">
-                          <Target className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
+                        <div className="flex items-center gap-1 font-semibold text-orange-600 dark:text-orange-300">
+                          <Target className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400 shrink-0" />
                           <span>
                             {bm.operator.replace(/_/g, " ")} (
                             {bm.minValue && bm.maxValue
@@ -552,13 +658,13 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
 
                       <td className="py-4 px-6 text-xs text-slate-500 dark:text-slate-400">
                         <div className="flex items-center gap-1.5 font-medium text-slate-800 dark:text-slate-200">
-                          <Clock className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
+                          <Clock className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400 shrink-0" />
                           <span>
                             {start} - {end}
                           </span>
                         </div>
                         {duration && (
-                          <span className="inline-block mt-0.5 text-[11px] font-semibold text-teal-600 dark:text-teal-400">
+                          <span className="inline-block mt-0.5 text-[11px] font-semibold text-orange-500 dark:text-orange-400">
                             {duration >= 60
                               ? `${Math.floor(duration / 60)}h ${
                                   duration % 60 > 0 ? `${duration % 60}m` : ""
@@ -582,7 +688,7 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
                         <span
                           className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                             tt.status === "ACTIVE"
-                              ? "bg-teal-50 dark:bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-500/30"
+                              ? "bg-orange-50 dark:bg-orange-950/20 dark:bg-orange-500/15 text-orange-600 dark:text-orange-300 border border-orange-200 dark:border-orange-800 dark:border-orange-500/30"
                               : tt.status === "COMPLETED"
                               ? "bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30"
                               : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
@@ -617,7 +723,7 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
                     <p className="text-sm font-semibold">No timetable entries found</p>
                     {hasActiveFilters ? (
                       <p className="text-xs text-slate-400 mt-1">
-                        Try adjusting or clearing your Class and Batch filters.
+                        Try adjusting or clearing your Date, Class, Batch, or search filters.
                       </p>
                     ) : (
                       <p className="text-xs text-slate-400 mt-1">
@@ -630,6 +736,19 @@ export function TimetableScheduleViewer({ slug, initialTimetables, classes }: Pr
             </tbody>
           </table>
         </div>
+
+        {/* Table Bottom Pagination */}
+        <TablePagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalItems={filteredTimetables.length}
+          limit={limit}
+          onPageChange={(p) => setPage(p)}
+          onLimitChange={(l) => {
+            setLimit(l);
+            setPage(1);
+          }}
+        />
       </div>
     </div>
   );

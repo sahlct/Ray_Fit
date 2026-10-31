@@ -319,7 +319,7 @@ export default function HealthTasksPage({
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
         {/* Header Action */}
         <div className="flex items-center justify-between">
           <div>
@@ -332,7 +332,7 @@ export default function HealthTasksPage({
           </div>
           <Button
             onClick={() => setIsTaskModalOpen(true)}
-            className="gap-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold text-xs"
+            className="gap-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-xs"
           >
             <Plus className="w-4 h-4" />
             <span>Create Health Task</span>
@@ -372,7 +372,7 @@ export default function HealthTasksPage({
                       </div>
 
                       <div className="text-right">
-                        <span className="text-[11px] font-mono text-teal-600 dark:text-teal-400 font-semibold block">
+                        <span className="text-[11px] font-mono text-orange-500 dark:text-orange-400 font-semibold block">
                           v{latestBm?.versionNumber || 1}
                         </span>
                         <span className="text-[10px] text-slate-500 dark:text-slate-400">
@@ -383,13 +383,13 @@ export default function HealthTasksPage({
 
                     {/* Active Benchmark Box */}
                     {latestBm && (
-                      <div className="p-3.5 rounded-xl bg-teal-50 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/30 mb-4">
+                      <div className="p-3.5 rounded-xl bg-orange-50 dark:bg-orange-950/20 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-800 dark:border-orange-500/30 mb-4">
                         <div className="flex items-center justify-between text-xs mb-1">
-                          <span className="font-bold text-teal-700 dark:text-teal-300 flex items-center gap-1.5">
-                            <Target className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                          <span className="font-bold text-orange-600 dark:text-orange-300 flex items-center gap-1.5">
+                            <Target className="w-4 h-4 text-orange-500 dark:text-orange-400" />
                             <span>Benchmark Rule:</span>
                           </span>
-                          <span className="font-mono text-teal-700 dark:text-teal-300 font-bold">
+                          <span className="font-mono text-orange-600 dark:text-orange-300 font-bold">
                             {latestBm.operator.replace(/_/g, " ")}
                           </span>
                         </div>
@@ -407,7 +407,7 @@ export default function HealthTasksPage({
 
                         {/* Critical Alert Safety Zones */}
                         {latestBm.criticalZones && Array.isArray(latestBm.criticalZones) && latestBm.criticalZones.length > 0 && (
-                          <div className="mt-2.5 pt-2 border-t border-teal-200/60 dark:border-teal-500/20">
+                          <div className="mt-2.5 pt-2 border-t border-orange-200/60 dark:border-orange-500/20">
                             <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-600 dark:text-rose-400 mb-1.5">
                               <AlertOctagon className="w-3.5 h-3.5 shrink-0" />
                               <span>Critical Safety Alert Zones:</span>
@@ -464,7 +464,7 @@ export default function HealthTasksPage({
                         setSelectedTaskId(task.id);
                         setIsAssignModalOpen(true);
                       }}
-                      className="bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs"
+                      className="bg-orange-500 hover:bg-orange-500 text-white font-bold text-xs"
                     >
                       Assign to Batch
                     </Button>
@@ -551,7 +551,7 @@ export default function HealthTasksPage({
 
           {/* Benchmark Operator & Thresholds */}
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-3">
-            <h4 className="text-xs font-bold uppercase text-teal-800 dark:text-teal-400">
+            <h4 className="text-xs font-bold uppercase text-orange-700 dark:text-orange-400">
               Benchmark Rule Configuration
             </h4>
 
@@ -630,7 +630,7 @@ export default function HealthTasksPage({
                     }))
                   }
                 />
-                <span className="text-[10px] text-teal-400 font-medium mt-1 block">
+                <span className="text-[10px] text-orange-400 font-medium mt-1 block">
                   Single value mode: Recorded telemetry must match this exact target ({taskForm.unit}).
                 </span>
               </div>
@@ -652,7 +652,7 @@ export default function HealthTasksPage({
                     }))
                   }
                 />
-                <span className="text-[10px] text-teal-400 font-medium mt-1 block">
+                <span className="text-[10px] text-orange-400 font-medium mt-1 block">
                   Single value mode: Recorded telemetry must reach or exceed this threshold ({taskForm.unit}).
                 </span>
               </div>
@@ -675,7 +675,7 @@ export default function HealthTasksPage({
                     }))
                   }
                 />
-                <span className="text-[10px] text-teal-400 font-medium mt-1 block">
+                <span className="text-[10px] text-orange-400 font-medium mt-1 block">
                   Single value mode: Recorded telemetry must remain at or below this ceiling ({taskForm.unit}).
                 </span>
               </div>
@@ -814,7 +814,7 @@ export default function HealthTasksPage({
             </Button>
             <Button
               type="submit"
-              className="bg-teal-700 hover:bg-teal-800 text-white font-semibold"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-semibold"
             >
               Save Task & Benchmark
             </Button>
@@ -945,7 +945,7 @@ export default function HealthTasksPage({
               disabled
               value={calculateDuration(assignForm.startTime, assignForm.endTime)}
               placeholder="e.g. 1 hr 30 mins (90 mins)"
-              className="bg-slate-50 dark:bg-slate-900/60 font-semibold text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-900/50 cursor-not-allowed"
+              className="bg-slate-50 dark:bg-slate-900/60 font-semibold text-orange-600 dark:text-orange-300 border-orange-200 dark:border-orange-800 dark:border-orange-800/50 cursor-not-allowed"
             />
           </div>
 
@@ -959,7 +959,7 @@ export default function HealthTasksPage({
             </Button>
             <Button
               type="submit"
-              className="bg-teal-700 hover:bg-teal-800 text-white font-semibold"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-semibold"
             >
               Generate Timetable
             </Button>

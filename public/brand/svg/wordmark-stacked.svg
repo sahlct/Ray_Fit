@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 230" width="240" height="230">
+  <defs><linearGradient id="rf" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#FF6B2C"/><stop offset="1" stop-color="#FF2D78"/></linearGradient></defs>
+  <rect x="72" y="8" width="96" height="96" rx="22" fill="url(#rf)"/>
+  <g fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" transform="translate(72 8) scale(0.8)"><path d="M24 62 h18 l8 -20 l15 44 l9 -24 h10"/></g>
+  <g stroke="#fff" stroke-width="3.6" stroke-linecap="round" opacity="0.55" transform="translate(72 8) scale(0.8)"><path d="M90 42 l12 -9"/><path d="M96 62 h14"/><path d="M90 82 l12 9"/></g>
+  <text x="120" y="180" font-family="Inter,Segoe UI,sans-serif" font-size="46" font-weight="800" letter-spacing="-1" text-anchor="middle" fill="#14181F">Rays<tspan font-weight="600">Fit</tspan></text></svg>

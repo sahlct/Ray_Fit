@@ -126,7 +126,7 @@ export default async function TimetablesPage(props: {
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
         <TimetableScheduleViewer
           slug={slug}
           initialTimetables={serializedTimetables}

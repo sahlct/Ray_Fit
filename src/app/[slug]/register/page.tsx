@@ -191,7 +191,7 @@ export default function PublicRegistrationPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200">
         <div className="flex flex-col items-center gap-3">
-          <RefreshCw className="w-8 h-8 animate-spin text-teal-500" />
+          <RefreshCw className="w-8 h-8 animate-spin text-orange-500" />
           <span className="text-xs font-semibold">Loading registration portal...</span>
         </div>
       </div>
@@ -210,9 +210,9 @@ export default function PublicRegistrationPage() {
           <div className="mt-6">
             <Link
               href="/"
-              className="inline-flex items-center text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline"
+              className="inline-flex items-center text-xs font-bold text-orange-500 dark:text-orange-400 hover:underline"
             >
-              Return to Ray Fit Homepage
+              Return to Rays Fit Homepage
             </Link>
           </div>
         </div>
@@ -226,14 +226,14 @@ export default function PublicRegistrationPage() {
       <header className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-30 px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-600 dark:text-teal-400 font-black text-sm">
+            <div className="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 dark:text-orange-400 font-black text-sm">
               {tenant.name.substring(0, 2).toUpperCase()}
             </div>
             <div>
               <div className="font-extrabold text-sm text-slate-900 dark:text-white leading-tight">
                 {tenant.name}
               </div>
-              <div className="text-[10px] text-slate-400">Ray Fit Health & Athletics Platform</div>
+              <div className="text-[10px] text-slate-400">Rays Fit Health & Athletics Platform</div>
             </div>
           </div>
 
@@ -241,9 +241,9 @@ export default function PublicRegistrationPage() {
             <ThemeToggle />
             <Link
               href={`/${tenant.slug}/login`}
-              className="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+              className="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
             >
-              Already registered? <span className="text-teal-600 dark:text-teal-400">Log In</span>
+              Already registered? <span className="text-orange-500 dark:text-orange-400">Log In</span>
             </Link>
           </div>
         </div>
@@ -286,7 +286,7 @@ export default function PublicRegistrationPage() {
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link
                   href={`/${tenant.slug}/login`}
-                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs shadow-md transition-all inline-flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold text-xs shadow-md transition-all inline-flex items-center justify-center gap-2"
                 >
                   <span>Go to Login Screen</span>
                   <ArrowRight className="w-4 h-4" />
@@ -313,7 +313,7 @@ export default function PublicRegistrationPage() {
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl space-y-8">
               {/* Top Banner */}
               <div className="text-center space-y-2">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-orange-500/10 text-orange-500 dark:text-orange-400 border border-orange-500/20">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Public Registration Portal</span>
                 </div>
@@ -344,7 +344,7 @@ export default function PublicRegistrationPage() {
                           }}
                           className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                             isSelected
-                              ? "border-teal-500 bg-teal-500/10 text-teal-900 dark:text-teal-100 shadow-sm"
+                              ? "border-orange-500 bg-orange-500/10 text-orange-800 dark:text-orange-100 dark:bg-orange-950/40 shadow-sm"
                               : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300"
                           }`}
                         >
@@ -379,7 +379,7 @@ export default function PublicRegistrationPage() {
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         placeholder="e.g. John Doe"
-                        className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                       />
                     </div>
                   </div>
@@ -397,7 +397,7 @@ export default function PublicRegistrationPage() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="e.g. student@school.edu"
-                          className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                          className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
                       </div>
                     </div>
@@ -413,7 +413,7 @@ export default function PublicRegistrationPage() {
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           placeholder="+1 (555) 000-0000"
-                          className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                          className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
                       </div>
                     </div>
@@ -432,7 +432,7 @@ export default function PublicRegistrationPage() {
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="Min 6 characters"
-                          className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                          className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
                       </div>
                     </div>
@@ -449,7 +449,7 @@ export default function PublicRegistrationPage() {
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="Repeat password"
-                          className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                          className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
                       </div>
                     </div>
@@ -463,7 +463,7 @@ export default function PublicRegistrationPage() {
                       <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">
                         2. {activeUserType.name} Profile Information
                       </h3>
-                      <span className="text-[10px] text-teal-600 dark:text-teal-400 font-bold">
+                      <span className="text-[10px] text-orange-500 dark:text-orange-400 font-bold">
                         Dynamic Organization Fields
                       </span>
                     </div>
@@ -487,7 +487,7 @@ export default function PublicRegistrationPage() {
                                   handleCustomFieldChange(field.fieldKey, e.target.value)
                                 }
                                 placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
-                                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                               />
                             </div>
                           );
@@ -517,7 +517,7 @@ export default function PublicRegistrationPage() {
                                 onChange={(e) =>
                                   handleCustomFieldChange(field.fieldKey, e.target.value)
                                 }
-                                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer"
+                                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
                               >
                                 <option value="">-- Select {field.label} --</option>
                                 {options.map((opt, idx) => (
@@ -543,7 +543,7 @@ export default function PublicRegistrationPage() {
                                 onChange={(e) =>
                                   handleCustomFieldChange(field.fieldKey, e.target.checked)
                                 }
-                                className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 border-slate-300 cursor-pointer"
+                                className="w-4 h-4 rounded text-orange-500 focus:ring-orange-500 border-slate-300 cursor-pointer"
                               />
                               <label
                                 htmlFor={`custom-${field.fieldKey}`}
@@ -578,7 +578,7 @@ export default function PublicRegistrationPage() {
                               placeholder={
                                 field.placeholder || `Enter ${field.label.toLowerCase()}`
                               }
-                              className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                              className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                             />
                           </div>
                         );
@@ -600,7 +600,7 @@ export default function PublicRegistrationPage() {
                   <Button
                     type="submit"
                     disabled={submitting}
-                    className="w-full h-11 bg-teal-500 hover:bg-teal-400 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all"
+                    className="w-full h-11 bg-orange-500 hover:bg-orange-400 text-slate-950 font-black text-xs rounded-xl shadow-lg transition-all"
                   >
                     {submitting ? (
                       <span className="flex items-center gap-2">

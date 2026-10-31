@@ -341,16 +341,16 @@ export default function BannersPage() {
     <div className="flex-1 flex flex-col">
       <TenantHeader
         title="Ad Tiles & Mobile Carousel Slider"
-        subtitle="Manage promotional carousel slides and partner sponsor tiles displayed at the top of the Ray Fit mobile app"
+        subtitle="Manage promotional carousel slides and partner sponsor tiles displayed at the top of the Rays Fit mobile app"
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
         {/* Header Action Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <SlidersHorizontal className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              <SlidersHorizontal className="w-5 h-5 text-orange-500 dark:text-orange-400" />
               <span>Mobile Carousel Ad Management</span>
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -363,7 +363,7 @@ export default function BannersPage() {
             </Badge>
             <Button
               onClick={handleOpenCreateModal}
-              className="gap-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold text-xs shadow-md shadow-teal-900/20"
+              className="gap-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-xs shadow-md shadow-orange-800/20"
             >
               <Plus className="w-4 h-4" />
               <span>Add Ad Slide</span>
@@ -381,7 +381,7 @@ export default function BannersPage() {
               </div>
             ) : banners.length === 0 ? (
               <div className="p-12 glass-card rounded-2xl border-dashed border-2 border-slate-300 dark:border-slate-800 text-center space-y-4">
-                <div className="w-14 h-14 mx-auto rounded-full bg-teal-50 dark:bg-teal-950/60 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                <div className="w-14 h-14 mx-auto rounded-full bg-orange-50 dark:bg-orange-950/20 dark:bg-orange-950/60 flex items-center justify-center text-orange-500 dark:text-orange-400">
                   <ImageIcon className="w-7 h-7" />
                 </div>
                 <div>
@@ -394,7 +394,7 @@ export default function BannersPage() {
                 </div>
                 <Button
                   onClick={handleOpenCreateModal}
-                  className="bg-teal-700 hover:bg-teal-800 text-white text-xs font-semibold"
+                  className="bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold"
                 >
                   Create First Ad Slide
                 </Button>
@@ -406,7 +406,7 @@ export default function BannersPage() {
                     key={b.id}
                     className={`glass-card p-4 rounded-xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
                       b.isActive
-                        ? "border-slate-200 dark:border-slate-800 hover:border-teal-500/50"
+                        ? "border-slate-200 dark:border-slate-800 hover:border-orange-500/50"
                         : "opacity-60 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50"
                     }`}
                   >
@@ -433,7 +433,7 @@ export default function BannersPage() {
                             {b.title}
                           </h4>
                           {b.isActive ? (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800 shrink-0">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-50 dark:bg-orange-950/20 dark:bg-orange-950/60 text-orange-600 dark:text-orange-300 border border-orange-200 dark:border-orange-800 dark:border-orange-700 shrink-0">
                               Active
                             </span>
                           ) : (
@@ -448,7 +448,7 @@ export default function BannersPage() {
                             href={b.targetUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1 truncate max-w-sm"
+                            className="text-xs text-orange-500 dark:text-orange-400 hover:underline flex items-center gap-1 truncate max-w-sm"
                           >
                             <ExternalLink className="w-3 h-3 shrink-0" />
                             <span className="truncate">{b.targetUrl}</span>
@@ -497,7 +497,7 @@ export default function BannersPage() {
           {/* Column 3: Live Mobile App Carousel Preview */}
           <div className="glass-card rounded-2xl p-6 border-slate-200 dark:border-slate-800 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase text-teal-800 dark:text-teal-400">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase text-orange-700 dark:text-orange-400">
                 <Smartphone className="w-4 h-4" />
                 <span>Mobile App Live Preview</span>
               </div>
@@ -521,10 +521,10 @@ export default function BannersPage() {
               {/* Mock App Screen Header */}
               <div className="px-2 py-1 mb-2 flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-5 h-5 rounded-md bg-teal-500 flex items-center justify-center text-[10px] text-white">
+                  <div className="w-5 h-5 rounded-md bg-orange-500 flex items-center justify-center text-[10px] text-white">
                     ⌚
                   </div>
-                  <span className="text-xs font-black text-white">Ray Fit</span>
+                  <span className="text-xs font-black text-white">Rays Fit</span>
                 </div>
                 <div className="text-[11px] font-bold text-slate-200">sahal</div>
               </div>
@@ -540,7 +540,7 @@ export default function BannersPage() {
                     />
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col justify-end p-2.5">
-                      <span className="text-[8px] font-bold uppercase tracking-wider text-teal-300">
+                      <span className="text-[8px] font-bold uppercase tracking-wider text-orange-300">
                         Featured Announcement
                       </span>
                       <h5 className="text-[10px] font-bold text-white leading-tight line-clamp-2 mt-0.5">
@@ -579,7 +579,7 @@ export default function BannersPage() {
                           key={i}
                           className={`h-1 rounded-full transition-all ${
                             i === activePreviewIndex
-                              ? "w-3 bg-teal-400"
+                              ? "w-3 bg-orange-400"
                               : "w-1 bg-white/40"
                           }`}
                         />
@@ -596,12 +596,12 @@ export default function BannersPage() {
 
               {/* Mock App Body (Step Ring) */}
               <div className="mt-3 p-3 bg-slate-800/80 rounded-xl flex items-center justify-center gap-3">
-                <div className="w-10 h-10 rounded-full border-4 border-teal-500 flex items-center justify-center text-[10px] text-white font-bold">
+                <div className="w-10 h-10 rounded-full border-4 border-orange-500 flex items-center justify-center text-[10px] text-white font-bold">
                   8.4k
                 </div>
                 <div>
                   <div className="text-[11px] font-bold text-white">Daily Steps Goal</div>
-                  <div className="text-[9px] text-teal-400">100% completed today</div>
+                  <div className="text-[9px] text-orange-400">100% completed today</div>
                 </div>
               </div>
             </div>
@@ -653,7 +653,7 @@ export default function BannersPage() {
             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
               <span>Banner Image File (Landscape Mobile Carousel) *</span>
               {form.imageUrl && (
-                <span className="text-[11px] font-normal text-teal-600 dark:text-teal-400 flex items-center gap-1">
+                <span className="text-[11px] font-normal text-orange-500 dark:text-orange-400 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Stored & Ready
                 </span>
               )}
@@ -683,7 +683,7 @@ export default function BannersPage() {
                         setRawImageSrc(form.imageUrl);
                         setIsCropperOpen(true);
                       }}
-                      className="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-md"
+                      className="bg-orange-500 hover:bg-orange-500 text-white text-xs font-bold shadow-md"
                     >
                       <Crop className="w-3.5 h-3.5 mr-1" /> Edit Crop
                     </Button>
@@ -695,7 +695,7 @@ export default function BannersPage() {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="text-teal-600 dark:text-teal-400 hover:underline font-semibold"
+                    className="text-orange-500 dark:text-orange-400 hover:underline font-semibold"
                   >
                     Change File
                   </button>
@@ -704,9 +704,9 @@ export default function BannersPage() {
             ) : (
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="cursor-pointer p-6 rounded-xl border-2 border-dashed border-teal-300 dark:border-teal-800/60 bg-teal-50/40 dark:bg-teal-950/20 hover:bg-teal-50 dark:hover:bg-teal-950/40 transition-all text-center space-y-2 group"
+                className="cursor-pointer p-6 rounded-xl border-2 border-dashed border-orange-300 dark:border-orange-700/60 bg-orange-50 dark:bg-orange-950/20/40 dark:bg-orange-950/20 hover:bg-orange-50 dark:bg-orange-950/20 dark:hover:bg-orange-950/40 transition-all text-center space-y-2 group"
               >
-                <div className="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-300 mx-auto flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-950/40 dark:bg-orange-800/50 text-orange-500 dark:text-orange-300 mx-auto flex items-center justify-center group-hover:scale-105 transition-transform">
                   <Upload className="w-6 h-6" />
                 </div>
                 <div>
@@ -765,7 +765,7 @@ export default function BannersPage() {
                   onChange={(e) =>
                     setForm((prev) => ({ ...prev, isActive: e.target.checked }))
                   }
-                  className="rounded border-slate-300 text-teal-600 focus:ring-teal-500 h-4 w-4"
+                  className="rounded border-slate-300 text-orange-500 focus:ring-orange-500 h-4 w-4"
                 />
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                   Slide is Active
@@ -784,7 +784,7 @@ export default function BannersPage() {
             </Button>
             <Button
               type="submit"
-              className="bg-teal-700 hover:bg-teal-800 text-white font-semibold"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-semibold"
             >
               {editingBanner ? "Update Slide" : "Save & Publish Slide"}
             </Button>
@@ -804,7 +804,7 @@ export default function BannersPage() {
           <div>
             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
               <span>Landscape Aspect Ratio:</span>
-              <span className="text-[11px] font-mono text-teal-600 dark:text-teal-400 font-semibold">
+              <span className="text-[11px] font-mono text-orange-500 dark:text-orange-400 font-semibold">
                 {cropAspectRatio === 2.4
                   ? "2.4:1 (Recommended Mobile Slider)"
                   : cropAspectRatio === 16 / 9
@@ -827,7 +827,7 @@ export default function BannersPage() {
                   onClick={() => setCropAspectRatio(ratio.value)}
                   className={`py-2 px-1 text-center rounded-lg border text-xs font-bold transition-all ${
                     Math.abs(cropAspectRatio - ratio.value) < 0.05
-                      ? "border-teal-600 bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 ring-2 ring-teal-500/30"
+                      ? "border-orange-500 bg-orange-50 dark:bg-orange-950/20 dark:bg-orange-950/60 text-orange-600 dark:text-orange-300 ring-2 ring-orange-500/30"
                       : "border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
                   }`}
                 >
@@ -842,12 +842,12 @@ export default function BannersPage() {
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span className="flex items-center gap-1">
-                <Move className="w-3.5 h-3.5 text-teal-600" />
+                <Move className="w-3.5 h-3.5 text-orange-500" />
                 <span>Drag image to reposition framing</span>
               </span>
               <span>
-                Zoom: <strong className="text-teal-600 font-mono">{cropZoom.toFixed(1)}x</strong> | Angle:{" "}
-                <strong className="text-teal-600 font-mono">{cropRotation}°</strong>
+                Zoom: <strong className="text-orange-500 font-mono">{cropZoom.toFixed(1)}x</strong> | Angle:{" "}
+                <strong className="text-orange-500 font-mono">{cropRotation}°</strong>
               </span>
             </div>
 
@@ -860,7 +860,7 @@ export default function BannersPage() {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleMouseUp}
-              className="relative w-full overflow-hidden rounded-xl bg-slate-950 border-2 border-teal-500/50 shadow-inner select-none cursor-grab active:cursor-grabbing flex items-center justify-center"
+              className="relative w-full overflow-hidden rounded-xl bg-slate-950 border-2 border-orange-500/50 shadow-inner select-none cursor-grab active:cursor-grabbing flex items-center justify-center"
               style={{
                 aspectRatio: `${cropAspectRatio}`,
                 maxHeight: "320px",
@@ -895,7 +895,7 @@ export default function BannersPage() {
 
               {/* Viewport badge */}
               <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm text-white px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1 pointer-events-none">
-                <Crop className="w-3 h-3 text-teal-400" />
+                <Crop className="w-3 h-3 text-orange-400" />
                 <span>Mobile Carousel Crop Area</span>
               </div>
             </div>
@@ -925,7 +925,7 @@ export default function BannersPage() {
                 step="0.05"
                 value={cropZoom}
                 onChange={(e) => setCropZoom(parseFloat(e.target.value))}
-                className="flex-1 accent-teal-600 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg cursor-pointer"
+                className="flex-1 accent-orange-500 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg cursor-pointer"
               />
               <Button
                 type="button"
@@ -937,7 +937,7 @@ export default function BannersPage() {
               >
                 <ZoomIn className="w-4 h-4" />
               </Button>
-              <span className="text-xs font-mono font-bold text-teal-600 w-10 text-right">
+              <span className="text-xs font-mono font-bold text-orange-500 w-10 text-right">
                 {cropZoom.toFixed(1)}x
               </span>
             </div>
@@ -1005,7 +1005,7 @@ export default function BannersPage() {
               type="button"
               disabled={isUploadingCrop}
               onClick={handleSaveCroppedImage}
-              className="bg-teal-700 hover:bg-teal-800 text-white font-semibold text-xs gap-1.5"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-semibold text-xs gap-1.5"
             >
               {isUploadingCrop ? (
                 <>

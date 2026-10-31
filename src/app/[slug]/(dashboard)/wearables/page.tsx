@@ -246,7 +246,7 @@ export default function WearablesFleetPage({
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-8">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-8">
         {/* Top Control Bar */}
         <div className="flex items-center justify-between">
           <div>
@@ -259,7 +259,7 @@ export default function WearablesFleetPage({
           </div>
           <Button
             onClick={() => setIsRegisterOpen(true)}
-            className="gap-2 bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-md"
+            className="gap-2 bg-orange-500 hover:bg-orange-500 text-white font-bold text-xs shadow-md"
           >
             <Plus className="w-4 h-4" />
             <span>Register New Band</span>
@@ -267,10 +267,10 @@ export default function WearablesFleetPage({
         </div>
 
         {/* Live Simulator Panel */}
-        <div className="glass-card rounded-2xl p-6 border-teal-500/30 bg-gradient-to-r from-teal-500/10 via-slate-50 dark:via-slate-900/70 to-cyan-500/10">
+        <div className="glass-card rounded-2xl p-6 border-orange-500/30 bg-gradient-to-r from-orange-500/10 via-slate-50 dark:via-slate-900/70 to-cyan-500/10">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold shadow-md shadow-teal-500/20">
+              <div className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold shadow-md shadow-orange-500/20">
                 <Radio className="w-5 h-5 animate-pulse" />
               </div>
               <div>
@@ -282,7 +282,7 @@ export default function WearablesFleetPage({
                 </p>
               </div>
             </div>
-            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-teal-50 dark:bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-500/30">
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-orange-50 dark:bg-orange-950/20 dark:bg-orange-500/20 text-orange-600 dark:text-orange-300 border border-orange-200 dark:border-orange-800 dark:border-orange-500/30">
               Vendor Ingestion Layer Active
             </span>
           </div>
@@ -295,7 +295,7 @@ export default function WearablesFleetPage({
               <select
                 value={simDeviceUuid}
                 onChange={(e) => setSimDeviceUuid(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-medium focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-medium focus:ring-2 focus:ring-orange-500"
               >
                 {devices.map((d) => (
                   <option key={d.id} value={d.deviceUuid}>
@@ -312,7 +312,7 @@ export default function WearablesFleetPage({
               <select
                 value={simMetric}
                 onChange={(e) => setRandomValue(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-medium focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-medium focus:ring-2 focus:ring-orange-500"
               >
                 <option value="STEPS">Steps</option>
                 <option value="HEART_RATE">Heart Rate (Pulse)</option>
@@ -348,7 +348,7 @@ export default function WearablesFleetPage({
             <Button
               type="submit"
               disabled={isSimulating}
-              className="h-10 bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs gap-2 shadow-md cursor-pointer"
+              className="h-10 bg-orange-500 hover:bg-orange-500 text-white font-bold text-xs gap-2 shadow-md cursor-pointer"
             >
               <Zap className="w-4 h-4" />
               <span>{isSimulating ? "Ingesting..." : "Simulate Sync"}</span>
@@ -356,8 +356,8 @@ export default function WearablesFleetPage({
           </form>
 
           {simFeedback && (
-            <div className="mt-3 p-3 rounded-xl bg-teal-500/15 border border-teal-500/30 text-xs text-teal-700 dark:text-teal-300 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 shrink-0 text-teal-600 dark:text-teal-400" />
+            <div className="mt-3 p-3 rounded-xl bg-orange-500/15 border border-orange-500/30 text-xs text-orange-600 dark:text-orange-300 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 shrink-0 text-orange-500 dark:text-orange-400" />
               <span>{simFeedback}</span>
             </div>
           )}
@@ -394,7 +394,7 @@ export default function WearablesFleetPage({
                       <td className="py-4 px-6 text-xs text-slate-400 font-mono">
                         #{idx + 1}
                       </td>
-                      <td className="py-4 px-6 font-mono font-bold text-teal-600 dark:text-teal-400">
+                      <td className="py-4 px-6 font-mono font-bold text-orange-500 dark:text-orange-400">
                         {device.deviceUuid}
                       </td>
 
@@ -409,8 +409,8 @@ export default function WearablesFleetPage({
 
                       <td className="py-4 px-6">
                         {device.student ? (
-                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 font-semibold text-xs border border-teal-200 dark:border-teal-500/30">
-                            <LinkIcon className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-orange-50 dark:bg-orange-950/20 dark:bg-orange-500/10 text-orange-600 dark:text-orange-300 font-semibold text-xs border border-orange-200 dark:border-orange-800 dark:border-orange-500/30">
+                            <LinkIcon className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400" />
                             <span>{device.student.fullName}</span>
                           </div>
                         ) : (
@@ -455,7 +455,7 @@ export default function WearablesFleetPage({
                               setPairDeviceId(device.id);
                               setIsPairOpen(true);
                             }}
-                            className="text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold"
+                            className="text-xs bg-orange-500 hover:bg-orange-500 text-white font-bold"
                           >
                             <LinkIcon className="w-3.5 h-3.5 mr-1" />
                             Pair Student
@@ -555,7 +555,7 @@ export default function WearablesFleetPage({
             </Button>
             <Button
               type="submit"
-              className="bg-teal-700 hover:bg-teal-800 text-white font-semibold"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-semibold"
             >
               Register Device
             </Button>
@@ -613,7 +613,7 @@ export default function WearablesFleetPage({
             </Button>
             <Button
               type="submit"
-              className="bg-teal-700 hover:bg-teal-800 text-white font-semibold"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-semibold"
             >
               Confirm Pairing
             </Button>

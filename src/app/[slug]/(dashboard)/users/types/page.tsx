@@ -172,7 +172,7 @@ export default function UserTypesManagementPage({
   const getIcon = (iconName: string | null) => {
     switch (iconName) {
       case "GraduationCap":
-        return <GraduationCap className="w-4 h-4 text-teal-400" />;
+        return <GraduationCap className="w-4 h-4 text-orange-400" />;
       case "Activity":
         return <Activity className="w-4 h-4 text-emerald-400" />;
       case "HeartPulse":
@@ -184,7 +184,7 @@ export default function UserTypesManagementPage({
       case "Award":
         return <Award className="w-4 h-4 text-indigo-400" />;
       default:
-        return <Users className="w-4 h-4 text-teal-400" />;
+        return <Users className="w-4 h-4 text-orange-400" />;
     }
   };
 
@@ -200,7 +200,7 @@ export default function UserTypesManagementPage({
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
         {/* Top Controls */}
         <div className="flex items-center justify-between">
           <div>
@@ -228,7 +228,7 @@ export default function UserTypesManagementPage({
                 setFormIcon("User");
                 setIsCreateModalOpen(true);
               }}
-              className="gap-2 bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-sm"
+              className="gap-2 bg-orange-500 hover:bg-orange-500 text-white font-bold text-xs shadow-sm"
             >
               <Plus className="w-4 h-4" />
               <span>Create User Type</span>
@@ -252,7 +252,7 @@ export default function UserTypesManagementPage({
             <span className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
               Core System Types
             </span>
-            <div className="text-2xl font-black text-teal-600 dark:text-teal-400 mt-1">
+            <div className="text-2xl font-black text-orange-500 dark:text-orange-400 mt-1">
               {systemCount}
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Platform defaults</p>
@@ -338,7 +338,7 @@ export default function UserTypesManagementPage({
                       </td>
 
                       {/* Slug */}
-                      <td className="py-4 px-6 text-xs font-mono text-teal-700 dark:text-teal-400">
+                      <td className="py-4 px-6 text-xs font-mono text-orange-600 dark:text-orange-400">
                         /{ut.slug}
                       </td>
 
@@ -349,7 +349,7 @@ export default function UserTypesManagementPage({
 
                       {/* Custom Fields */}
                       <td className="py-4 px-6 text-xs text-slate-600 dark:text-slate-300">
-                        <span className="font-mono text-teal-700 dark:text-teal-300 font-bold mr-1">
+                        <span className="font-mono text-orange-600 dark:text-orange-300 font-bold mr-1">
                           {ut._count?.customFields || 0}
                         </span>
                         field(s)
@@ -373,7 +373,7 @@ export default function UserTypesManagementPage({
                         <div className="flex items-center justify-end gap-1.5">
                           <Link
                             href={`/${slug}/users/fields`}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-teal-600 dark:hover:text-teal-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-orange-500 dark:hover:text-orange-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                             title="View Schema Fields"
                           >
                             <Eye className="w-4 h-4" />
@@ -472,7 +472,7 @@ export default function UserTypesManagementPage({
               <select
                 value={formIcon}
                 onChange={(e) => setFormIcon(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-orange-500"
               >
                 <option value="User">User Profile</option>
                 <option value="HeartPulse">Heart Pulse (Clinical)</option>
@@ -497,7 +497,7 @@ export default function UserTypesManagementPage({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-teal-600 hover:bg-teal-500 text-white font-bold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-bold"
             >
               {isSubmitting ? "Creating..." : "Create User Type"}
             </Button>
@@ -531,7 +531,7 @@ export default function UserTypesManagementPage({
             <select
               value={formIcon}
               onChange={(e) => setFormIcon(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-teal-500"
+              className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-orange-500"
             >
               <option value="User">User Profile</option>
               <option value="HeartPulse">Heart Pulse (Clinical)</option>
@@ -555,7 +555,7 @@ export default function UserTypesManagementPage({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-teal-600 hover:bg-teal-500 text-white font-bold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-bold"
             >
               {isSubmitting ? "Saving..." : "Save Changes"}
             </Button>

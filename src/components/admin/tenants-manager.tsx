@@ -69,7 +69,7 @@ export function TenantsManager({
     contactEmail: "",
     contactPhone: "",
     address: "",
-    primaryColor: "#0f766e",
+    primaryColor: "#FF6B2C",
     secondaryColor: "#f59e0b",
     status: "ACTIVE",
   });
@@ -94,7 +94,7 @@ export function TenantsManager({
       contactEmail: tenant.contactEmail,
       contactPhone: tenant.contactPhone || "",
       address: tenant.address || "",
-      primaryColor: tenant.primaryColor || "#0f766e",
+      primaryColor: tenant.primaryColor || "#FF6B2C",
       secondaryColor: tenant.secondaryColor || "#f59e0b",
       status: tenant.status,
     });
@@ -187,7 +187,7 @@ export function TenantsManager({
                 setLimit(Number(e.target.value));
                 setPage(1);
               }}
-              className="h-9 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-semibold focus:ring-1 focus:ring-teal-500 outline-none cursor-pointer"
+              className="h-9 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-semibold focus:ring-1 focus:ring-orange-500 outline-none cursor-pointer"
             >
               <option value={10}>10 per page</option>
               <option value={25}>25 per page</option>
@@ -244,7 +244,7 @@ export function TenantsManager({
                       <div className="flex items-center gap-3">
                         <div
                           className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-white text-xs shrink-0"
-                          style={{ backgroundColor: t.primaryColor || "#0f766e" }}
+                          style={{ backgroundColor: t.primaryColor || "#FF6B2C" }}
                         >
                           <Building2 className="w-4 h-4 text-white" />
                         </div>
@@ -252,7 +252,7 @@ export function TenantsManager({
                           <button
                             type="button"
                             onClick={() => setViewingTenant(t)}
-                            className="font-bold text-slate-900 dark:text-white hover:text-teal-600 dark:hover:text-teal-400 text-left transition-colors"
+                            className="font-bold text-slate-900 dark:text-white hover:text-orange-500 dark:hover:text-orange-400 text-left transition-colors"
                           >
                             {t.name}
                           </button>
@@ -264,7 +264,7 @@ export function TenantsManager({
                     </td>
 
                     {/* Slug */}
-                    <td className="py-4 px-6 text-xs font-mono text-teal-600 dark:text-teal-400">
+                    <td className="py-4 px-6 text-xs font-mono text-orange-500 dark:text-orange-400">
                       /{t.slug}
                     </td>
 
@@ -325,7 +325,7 @@ export function TenantsManager({
                         <button
                           type="button"
                           onClick={() => setViewingTenant(t)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-teal-600 dark:hover:text-teal-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-orange-500 dark:hover:text-orange-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                           title="View Organization Details"
                         >
                           <Eye className="w-4 h-4" />
@@ -351,7 +351,7 @@ export function TenantsManager({
 
                         <Link
                           href={`/${t.slug}/dashboard`}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-teal-700 dark:text-teal-300 hover:text-teal-900 dark:hover:text-white text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-colors ml-1"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-orange-600 dark:text-orange-300 hover:text-orange-800 dark:hover:text-white text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-colors ml-1"
                         >
                           <span>Portal</span>
                           <ExternalLink className="w-3.5 h-3.5" />
@@ -426,7 +426,7 @@ export function TenantsManager({
             </div>
 
             <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/60 space-y-2">
-              <span className="text-xs font-bold text-teal-600 dark:text-teal-400 uppercase">
+              <span className="text-xs font-bold text-orange-500 dark:text-orange-400 uppercase">
                 Active Tenant Cohort Metrics
               </span>
               <div className="grid grid-cols-4 gap-2 text-center pt-1">
@@ -453,7 +453,7 @@ export function TenantsManager({
               <Link
                 href={`/${viewingTenant.slug}/login`}
                 target="_blank"
-                className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-500 dark:hover:text-teal-300 font-medium flex items-center gap-1"
+                className="text-xs text-orange-500 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium flex items-center gap-1"
               >
                 <span>Open Login Portal (/{viewingTenant.slug}/login)</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -529,7 +529,7 @@ export function TenantsManager({
               <select
                 value={editForm.status}
                 onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-orange-500"
               >
                 <option value="ACTIVE">ACTIVE</option>
                 <option value="SUSPENDED">SUSPENDED</option>
@@ -569,7 +569,7 @@ export function TenantsManager({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-teal-600 hover:bg-teal-500 text-white font-bold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-bold"
             >
               {isSubmitting ? "Saving..." : "Save Changes"}
             </Button>

@@ -43,7 +43,7 @@ export default async function TenantAuditPage(props: {
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
@@ -91,7 +91,7 @@ export default async function TenantAuditPage(props: {
                         </span>
                       </td>
 
-                      <td className="py-4 px-6 font-bold text-teal-600 dark:text-teal-400">
+                      <td className="py-4 px-6 font-bold text-orange-500 dark:text-orange-400">
                         {log.action}
                       </td>
 

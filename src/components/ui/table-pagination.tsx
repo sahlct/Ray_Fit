@@ -66,7 +66,7 @@ export function TableToolbar({
           <select
             value={limit}
             onChange={(e) => onLimitChange(Number(e.target.value))}
-            className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-semibold focus:ring-1 focus:ring-teal-500 outline-none cursor-pointer"
+            className="h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-semibold focus:ring-1 focus:ring-orange-500 outline-none cursor-pointer"
           >
             {limitOptions.map((opt) => (
               <option key={opt} value={opt}>
@@ -140,13 +140,32 @@ export function TablePagination({
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 text-xs">
-      <div className="text-slate-500 dark:text-slate-400">
-        Showing <span className="font-semibold text-slate-900 dark:text-white">{startItem}</span> to{" "}
-        <span className="font-semibold text-slate-900 dark:text-white">{endItem}</span> of{" "}
-        <span className="font-semibold text-slate-900 dark:text-white">{total}</span> entries
+      <div className="flex flex-wrap items-center gap-3 text-slate-500 dark:text-slate-400">
+        <div>
+          Showing <span className="font-semibold text-slate-900 dark:text-white">{startItem}</span> to{" "}
+          <span className="font-semibold text-slate-900 dark:text-white">{endItem}</span> of{" "}
+          <span className="font-semibold text-slate-900 dark:text-white">{total}</span> entries
+        </div>
+
+        {onLimitChange && (
+          <div className="flex items-center gap-1.5 sm:border-l border-slate-200 dark:border-slate-800 sm:pl-3">
+            <span>Show:</span>
+            <select
+              value={limit}
+              onChange={(e) => onLimitChange(Number(e.target.value))}
+              className="h-7 px-2 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs font-semibold focus:ring-1 focus:ring-orange-500 outline-none cursor-pointer"
+            >
+              {[10, 25, 50, 100].map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt} / page
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 flex-wrap justify-center">
         {/* First & Prev */}
         <Button
           size="sm"
@@ -187,7 +206,7 @@ export function TablePagination({
                 onClick={() => onPageChange(Number(p))}
                 className={`h-8 w-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   isCurrent
-                    ? "bg-teal-600 text-white shadow-sm"
+                    ? "bg-orange-500 text-white shadow-sm"
                     : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >

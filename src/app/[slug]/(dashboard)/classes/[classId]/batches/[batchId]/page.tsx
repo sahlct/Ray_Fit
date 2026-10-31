@@ -210,7 +210,7 @@ export default function BatchFullDetailsPage({
           subtitle="Fetching student cohort, wearable bands, and tactical training squads"
           tenantSlug={slug}
         />
-        <main className="flex-1 p-8 max-w-7xl mx-auto w-full flex items-center justify-center">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full flex items-center justify-center">
           <div className="glass-card rounded-2xl p-12 text-center text-slate-400">
             Loading batch roster and groups...
           </div>
@@ -227,12 +227,12 @@ export default function BatchFullDetailsPage({
           subtitle="The requested batch could not be found"
           tenantSlug={slug}
         />
-        <main className="flex-1 p-8 max-w-7xl mx-auto w-full">
-          <div className="glass-card rounded-2xl p-8 text-center text-slate-300">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+          <div className="glass-card rounded-2xl p-4 sm:p-6 lg:p-8 text-center text-slate-300">
             <p className="mb-4">Batch record not found in this class.</p>
             <Link
               href={`/${slug}/classes/${classId}`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-teal-600 text-white font-bold text-xs"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-orange-500 text-white font-bold text-xs"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Class</span>
@@ -280,20 +280,20 @@ export default function BatchFullDetailsPage({
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
         {/* Navigation Breadcrumb & Back Link */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
             <Link
               href={`/${slug}/classes`}
-              className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+              className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
             >
               Classes
             </Link>
             <span>/</span>
             <Link
               href={`/${slug}/classes/${classId}`}
-              className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors font-medium text-slate-700 dark:text-slate-300"
+              className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors font-medium text-slate-700 dark:text-slate-300"
             >
               {batchData.class.name}
             </Link>
@@ -312,7 +312,7 @@ export default function BatchFullDetailsPage({
 
             <Button
               onClick={() => setIsEnrollModalOpen(true)}
-              className="gap-2 bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-sm"
+              className="gap-2 bg-orange-500 hover:bg-orange-500 text-white font-bold text-xs shadow-sm"
             >
               <UserPlus className="w-4 h-4" />
               <span>Enroll Student</span>
@@ -327,7 +327,7 @@ export default function BatchFullDetailsPage({
               <span className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
                 Enrollment Capacity
               </span>
-              <Users className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+              <Users className="w-4 h-4 text-orange-500 dark:text-orange-400" />
             </div>
             <p className="text-2xl font-black text-slate-900 dark:text-white">
               {batchData.enrollments.length}{" "}
@@ -338,7 +338,7 @@ export default function BatchFullDetailsPage({
             <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden mt-2">
               <div
                 style={{ width: `${Math.min(100, capacityPct)}%` }}
-                className={`h-full ${capacityPct >= 90 ? "bg-rose-500" : "bg-teal-500"}`}
+                className={`h-full ${capacityPct >= 90 ? "bg-rose-500" : "bg-orange-500"}`}
               />
             </div>
           </div>
@@ -393,7 +393,7 @@ export default function BatchFullDetailsPage({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                <Sparkles className="w-4 h-4 text-orange-500 dark:text-orange-400" />
                 <span>Tactical Student Groups within {batchData.name}</span>
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -407,7 +407,7 @@ export default function BatchFullDetailsPage({
                 onClick={() => setActiveSquad("all")}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activeSquad === "all"
-                    ? "bg-teal-600 text-white shadow font-bold"
+                    ? "bg-orange-500 text-white shadow font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -417,7 +417,7 @@ export default function BatchFullDetailsPage({
                 onClick={() => setActiveSquad("Squad Alpha")}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activeSquad === "Squad Alpha"
-                    ? "bg-teal-600 text-white shadow font-bold"
+                    ? "bg-orange-500 text-white shadow font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -427,7 +427,7 @@ export default function BatchFullDetailsPage({
                 onClick={() => setActiveSquad("Squad Beta")}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activeSquad === "Squad Beta"
-                    ? "bg-teal-600 text-white shadow font-bold"
+                    ? "bg-orange-500 text-white shadow font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -437,7 +437,7 @@ export default function BatchFullDetailsPage({
                 onClick={() => setActiveSquad("Squad Gamma")}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activeSquad === "Squad Gamma"
-                    ? "bg-teal-600 text-white shadow font-bold"
+                    ? "bg-orange-500 text-white shadow font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -448,10 +448,10 @@ export default function BatchFullDetailsPage({
 
           {/* Quick squad summary callout cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-            <div className="p-4 rounded-xl border border-teal-500/20 bg-teal-500/5">
+            <div className="p-4 rounded-xl border border-orange-500/20 bg-orange-500/5">
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="font-bold text-teal-700 dark:text-teal-300">Squad Alpha (Cardio)</span>
-                <span className="font-mono text-teal-600 dark:text-teal-400 font-bold">{squadAlphaCount} Students</span>
+                <span className="font-bold text-orange-600 dark:text-orange-300">Squad Alpha (Cardio)</span>
+                <span className="font-mono text-orange-500 dark:text-orange-400 font-bold">{squadAlphaCount} Students</span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Aerobic capacity, stamina, target HR zone 130-160 bpm
@@ -535,7 +535,7 @@ export default function BatchFullDetailsPage({
                         {/* Student Details */}
                         <td className="py-4 px-6">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-teal-500/15 text-teal-700 dark:text-teal-300 font-bold text-xs flex items-center justify-center">
+                            <div className="w-9 h-9 rounded-xl bg-orange-500/15 text-orange-600 dark:text-orange-300 font-bold text-xs flex items-center justify-center">
                               {e.student.fullName.substring(0, 2).toUpperCase()}
                             </div>
                             <div>
@@ -551,7 +551,7 @@ export default function BatchFullDetailsPage({
                         </td>
 
                         {/* Roll Code */}
-                        <td className="py-4 px-6 text-xs font-mono text-teal-600 dark:text-teal-400 font-bold">
+                        <td className="py-4 px-6 text-xs font-mono text-orange-500 dark:text-orange-400 font-bold">
                           {e.rollNumber || "UNASSIGNED"}
                         </td>
 
@@ -560,7 +560,7 @@ export default function BatchFullDetailsPage({
                           <select
                             value={currentSquad}
                             onChange={(ev) => handleSquadChange(e.id, ev.target.value)}
-                            className="h-8 px-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-semibold focus:ring-1 focus:ring-teal-500"
+                            className="h-8 px-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-semibold focus:ring-1 focus:ring-orange-500"
                           >
                             <option value="Squad Alpha (Cardio)">Squad Alpha (Cardio)</option>
                             <option value="Squad Beta (Strength)">Squad Beta (Strength)</option>
@@ -649,7 +649,7 @@ export default function BatchFullDetailsPage({
 
             <Link
               href={`/${slug}/tasks`}
-              className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-500 font-semibold"
+              className="text-xs text-orange-500 dark:text-orange-400 hover:text-orange-500 font-semibold"
             >
               Configure Tasks & Rules →
             </Link>
@@ -665,7 +665,7 @@ export default function BatchFullDetailsPage({
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-bold text-slate-900 dark:text-white text-sm">{bt.task.name}</h4>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-orange-500/15 text-orange-600 dark:text-orange-300 border border-orange-500/30">
                         {bt.task.metricType}
                       </span>
                     </div>
@@ -724,7 +724,7 @@ export default function BatchFullDetailsPage({
               onChange={(e) =>
                 setEnrollForm({ ...enrollForm, studentId: e.target.value })
               }
-              className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-teal-500"
+              className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-orange-500"
             >
               <option value="">Choose student...</option>
               {allStudents.map((s) => (
@@ -758,7 +758,7 @@ export default function BatchFullDetailsPage({
             </Button>
             <Button
               type="submit"
-              className="bg-teal-600 hover:bg-teal-500 text-white font-bold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-bold"
             >
               Enroll Student
             </Button>

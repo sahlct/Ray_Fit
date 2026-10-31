@@ -199,7 +199,7 @@ export default function ClassFullDetailsPage({
           subtitle="Fetching class roster, connected batches, and student groups"
           tenantSlug={slug}
         />
-        <main className="flex-1 p-8 max-w-7xl mx-auto w-full flex items-center justify-center">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full flex items-center justify-center">
           <div className="glass-card rounded-2xl p-12 text-center text-slate-400">
             Loading class structure and roster...
           </div>
@@ -216,12 +216,12 @@ export default function ClassFullDetailsPage({
           subtitle="The requested class could not be found"
           tenantSlug={slug}
         />
-        <main className="flex-1 p-8 max-w-7xl mx-auto w-full">
-          <div className="glass-card rounded-2xl p-8 text-center text-slate-300">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+          <div className="glass-card rounded-2xl p-4 sm:p-6 lg:p-8 text-center text-slate-300">
             <p className="mb-4">Class record not found in this institution.</p>
             <Link
               href={`/${slug}/classes`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-teal-600 text-white font-bold text-xs"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-orange-500 text-white font-bold text-xs"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Classes Overview</span>
@@ -280,13 +280,13 @@ export default function ClassFullDetailsPage({
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
         {/* Navigation Breadcrumb & Back Link */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
             <Link
               href={`/${slug}/classes`}
-              className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300"
+              className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Classes & Batches</span>
@@ -298,7 +298,7 @@ export default function ClassFullDetailsPage({
           <div className="flex items-center gap-3">
             <Button
               onClick={() => setIsBatchModalOpen(true)}
-              className="gap-2 bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-sm"
+              className="gap-2 bg-orange-500 hover:bg-orange-500 text-white font-bold text-xs shadow-sm"
             >
               <Plus className="w-4 h-4" />
               <span>Add New Batch</span>
@@ -313,7 +313,7 @@ export default function ClassFullDetailsPage({
               <span className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
                 Connected Batches
               </span>
-              <Layers className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+              <Layers className="w-4 h-4 text-orange-500 dark:text-orange-400" />
             </div>
             <p className="text-2xl font-black text-slate-900 dark:text-white">{classData.batches.length}</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Active class subdivisions</p>
@@ -348,7 +348,7 @@ export default function ClassFullDetailsPage({
             <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden mt-2">
               <div
                 style={{ width: `${Math.min(100, overallOccupancy)}%` }}
-                className="h-full bg-teal-500 rounded-full"
+                className="h-full bg-orange-500 rounded-full"
               />
             </div>
           </div>
@@ -391,7 +391,7 @@ export default function ClassFullDetailsPage({
                 return (
                   <div
                     key={batch.id}
-                    className="glass-card rounded-2xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-between shadow-sm dark:shadow-xl hover:border-teal-500/40 transition-all"
+                    className="glass-card rounded-2xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-between shadow-sm dark:shadow-xl hover:border-orange-500/40 transition-all"
                   >
                     <div>
                       <div className="flex items-start justify-between mb-3">
@@ -399,7 +399,7 @@ export default function ClassFullDetailsPage({
                           <h4 className="font-extrabold text-slate-900 dark:text-white text-base">
                             {batch.name}
                           </h4>
-                          <span className="text-xs text-teal-600 dark:text-teal-400 font-medium">
+                          <span className="text-xs text-orange-500 dark:text-orange-400 font-medium">
                             {classData.name} Cohort
                           </span>
                         </div>
@@ -410,7 +410,7 @@ export default function ClassFullDetailsPage({
 
                       <div className="text-xs text-slate-500 dark:text-slate-400 space-y-1.5 mb-4">
                         <div className="flex items-center gap-2">
-                          <Activity className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
+                          <Activity className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400 shrink-0" />
                           <span>
                             Coach:{" "}
                             <strong className="text-slate-800 dark:text-slate-200">
@@ -438,7 +438,7 @@ export default function ClassFullDetailsPage({
                           <div
                             style={{ width: `${Math.min(100, capacityPct)}%` }}
                             className={`h-full ${
-                              capacityPct >= 90 ? "bg-rose-500" : "bg-teal-500"
+                              capacityPct >= 90 ? "bg-rose-500" : "bg-orange-500"
                             }`}
                           />
                         </div>
@@ -456,7 +456,7 @@ export default function ClassFullDetailsPage({
                               className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700"
                             >
                               {en.student.assignedDevices.length > 0 && (
-                                <Watch className="w-3 h-3 text-teal-600 dark:text-teal-400" />
+                                <Watch className="w-3 h-3 text-orange-500 dark:text-orange-400" />
                               )}
                               <span>{en.student.fullName}</span>
                             </span>
@@ -479,7 +479,7 @@ export default function ClassFullDetailsPage({
                     <div className="space-y-2 pt-3 border-t border-slate-200 dark:border-slate-800">
                       <Link
                         href={`/${slug}/classes/${classId}/batches/${batch.id}`}
-                        className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs transition-colors shadow-sm"
+                        className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-orange-500 hover:bg-orange-500 text-white font-bold text-xs transition-colors shadow-sm"
                       >
                         <span>View Batch Full Details & Groups</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -525,7 +525,7 @@ export default function ClassFullDetailsPage({
               <select
                 value={selectedBatchFilter}
                 onChange={(e) => setSelectedBatchFilter(e.target.value)}
-                className="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-medium focus:ring-2 focus:ring-teal-500"
+                className="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-medium focus:ring-2 focus:ring-orange-500"
               >
                 <option value="all">All Batches</option>
                 {classData.batches.map((b) => (
@@ -568,13 +568,13 @@ export default function ClassFullDetailsPage({
                     >
                       <td className="py-4 px-6 font-bold text-slate-900 dark:text-white">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-lg bg-teal-500/15 text-teal-600 dark:text-teal-300 font-bold text-xs flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-lg bg-orange-500/15 text-orange-500 dark:text-orange-300 font-bold text-xs flex items-center justify-center">
                             {item.student.fullName.substring(0, 2).toUpperCase()}
                           </div>
                           <span>{item.student.fullName}</span>
                         </div>
                       </td>
-                      <td className="py-4 px-6 text-xs font-mono text-teal-700 dark:text-teal-400">
+                      <td className="py-4 px-6 text-xs font-mono text-orange-600 dark:text-orange-400">
                         {item.rollNumber || "—"}
                       </td>
                       <td className="py-4 px-6">
@@ -601,7 +601,7 @@ export default function ClassFullDetailsPage({
                       <td className="py-4 px-6 text-right">
                         <Link
                           href={`/${slug}/classes/${classId}/batches/${item.batchId}`}
-                          className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-semibold"
+                          className="text-xs text-orange-500 dark:text-orange-400 hover:text-orange-600 dark:hover:text-orange-300 font-semibold"
                         >
                           View in Batch →
                         </Link>
@@ -680,7 +680,7 @@ export default function ClassFullDetailsPage({
                 onChange={(e) =>
                   setBatchForm({ ...batchForm, instructorId: e.target.value })
                 }
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-orange-500"
               >
                 <option value="">Unassigned</option>
                 {allCoaches.map((c) => (
@@ -715,7 +715,7 @@ export default function ClassFullDetailsPage({
             </Button>
             <Button
               type="submit"
-              className="bg-teal-600 hover:bg-teal-500 text-white font-bold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-bold"
             >
               Create Batch
             </Button>
@@ -754,7 +754,7 @@ export default function ClassFullDetailsPage({
               onChange={(e) =>
                 setEnrollForm({ ...enrollForm, studentId: e.target.value })
               }
-              className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-teal-500"
+              className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-orange-500"
             >
               <option value="">Select student...</option>
               {allStudents.map((s) => (
@@ -788,7 +788,7 @@ export default function ClassFullDetailsPage({
             </Button>
             <Button
               type="submit"
-              className="bg-teal-600 hover:bg-teal-500 text-white font-bold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-bold"
             >
               Enroll Student
             </Button>

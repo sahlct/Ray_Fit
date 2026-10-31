@@ -7,9 +7,14 @@ import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Ray Fit — School Health & Fitness Monitoring Platform",
+  title: "Rays Fit — School Health & Fitness Monitoring Platform",
   description:
     "Enterprise multi-tenant student health monitoring platform with connected wearable smart bands, dynamic benchmarks, and automated evaluation.",
+  icons: {
+    icon: "/brand/png/raysfit-icon-180.png",
+    shortcut: "/brand/png/raysfit-icon-32.png",
+    apple: "/brand/png/raysfit-icon-180.png",
+  },
 };
 
 export default function RootLayout({

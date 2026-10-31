@@ -158,7 +158,7 @@ export default function RolesPermissionsPage({
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
@@ -170,7 +170,7 @@ export default function RolesPermissionsPage({
           </div>
           <Button
             onClick={() => setIsCreateModalOpen(true)}
-            className="gap-2 bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs shadow-md"
+            className="gap-2 bg-orange-500 hover:bg-orange-500 text-white font-semibold text-xs shadow-md"
           >
             <Plus className="w-4 h-4" />
             <span>Create Custom Role</span>
@@ -192,7 +192,7 @@ export default function RolesPermissionsPage({
                 <div>
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                      <ShieldCheck className="w-5 h-5 text-orange-500 dark:text-orange-400" />
                       <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
                         {role.name}
                       </h3>
@@ -221,7 +221,7 @@ export default function RolesPermissionsPage({
                       {role.permissions.slice(0, 10).map((rp) => (
                         <span
                           key={rp.permission.id}
-                          className="px-2 py-0.5 rounded bg-teal-50 dark:bg-teal-500/10 text-[10px] font-mono font-semibold text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-500/30"
+                          className="px-2 py-0.5 rounded bg-orange-50 dark:bg-orange-950/20 dark:bg-orange-500/10 text-[10px] font-mono font-semibold text-orange-600 dark:text-orange-300 border border-orange-200 dark:border-orange-800 dark:border-orange-500/30"
                         >
                           {rp.permission.module}:{rp.permission.action}
                         </span>
@@ -272,7 +272,7 @@ export default function RolesPermissionsPage({
                 key={moduleName}
                 className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60"
               >
-                <h4 className="text-xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-400 mb-3">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-3">
                   Module: {moduleName}
                 </h4>
 
@@ -285,7 +285,7 @@ export default function RolesPermissionsPage({
                         key={p.id}
                         className={`flex items-center gap-2 p-2 rounded-lg border text-xs cursor-pointer transition-all ${
                           isChecked
-                            ? "bg-teal-50 dark:bg-teal-500/20 border-teal-500 font-semibold text-teal-900 dark:text-white"
+                            ? "bg-orange-50 dark:bg-orange-950/20 dark:bg-orange-500/20 border-orange-500 font-semibold text-orange-800 dark:text-white"
                             : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
                         }`}
                       >
@@ -293,7 +293,7 @@ export default function RolesPermissionsPage({
                           type="checkbox"
                           checked={isChecked}
                           onChange={() => togglePermission(p.id)}
-                          className="w-3.5 h-3.5 text-teal-500 rounded bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 focus:ring-teal-500"
+                          className="w-3.5 h-3.5 text-orange-500 rounded bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 focus:ring-orange-500"
                         />
                         <span>{p.action}</span>
                       </label>
@@ -315,7 +315,7 @@ export default function RolesPermissionsPage({
             </Button>
             <Button
               onClick={handleSavePermissions}
-              className="bg-teal-600 hover:bg-teal-500 text-white font-semibold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-semibold"
             >
               Save Permission Changes
             </Button>
@@ -365,7 +365,7 @@ export default function RolesPermissionsPage({
             </Button>
             <Button
               type="submit"
-              className="bg-teal-600 hover:bg-teal-500 text-white font-semibold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-semibold"
             >
               Create Role
             </Button>

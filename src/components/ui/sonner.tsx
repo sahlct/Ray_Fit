@@ -13,7 +13,7 @@ export function Toaster() {
             "group toast group-[.toaster]:bg-slate-900 group-[.toaster]:text-slate-100 group-[.toaster]:border-slate-800 group-[.toaster]:shadow-2xl group-[.toaster]:rounded-xl font-sans",
           description: "group-[.toast]:text-slate-400 text-xs",
           actionButton:
-            "group-[.toast]:bg-teal-600 group-[.toast]:text-white font-semibold",
+            "group-[.toast]:bg-orange-500 group-[.toast]:text-white font-semibold",
           cancelButton:
             "group-[.toast]:bg-slate-800 group-[.toast]:text-slate-300",
         },

@@ -218,6 +218,13 @@ export async function POST(req: NextRequest) {
 
     if (action === 'START_TASK') {
       const startTime = new Date();
+      const startMode = body.startMode || 'MANUAL';
+      const modeLabel =
+        startMode === 'SCHEDULED'
+          ? 'Scheduled Start'
+          : startMode === 'AUTO_COACH'
+          ? 'Coach Window Auto-Start'
+          : 'Manual Start';
 
       // Upsert evaluation record with status IN_PROGRESS
       const evaluation = await prisma.taskEvaluationResult.upsert({
@@ -231,7 +238,7 @@ export async function POST(req: NextRequest) {
         update: {
           status: 'IN_PROGRESS',
           actualStartTime: startTime,
-          thresholdSummary: `Task started at ${startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}. Telemetry recording in progress.`,
+          thresholdSummary: `Task started at ${startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} (${modeLabel}). Telemetry recording in progress.`,
           evaluatedAt: startTime,
         },
         create: {
@@ -242,7 +249,7 @@ export async function POST(req: NextRequest) {
           evaluationDate: entry.scheduledDate,
           status: 'IN_PROGRESS',
           actualStartTime: startTime,
-          thresholdSummary: `Task started at ${startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}. Telemetry recording in progress.`,
+          thresholdSummary: `Task started at ${startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} (${modeLabel}). Telemetry recording in progress.`,
           evaluatedAt: startTime,
         },
       });

@@ -350,7 +350,7 @@ export default function UsersDirectoryPage({
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
         {/* Top Controls: User Type Select Field, Limit Selector, Search & Actions */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3 flex-wrap">
@@ -362,7 +362,7 @@ export default function UsersDirectoryPage({
                   setSelectedTypeFilter(e.target.value);
                   setPage(1);
                 }}
-                className="h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs font-semibold focus:ring-2 focus:ring-teal-500 shadow-sm cursor-pointer"
+                className="h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs font-semibold focus:ring-2 focus:ring-orange-500 shadow-sm cursor-pointer"
               >
                 <option value="all">All Classifications ({totalUsers})</option>
                 {userTypes.map((ut) => (
@@ -382,7 +382,7 @@ export default function UsersDirectoryPage({
                   setLimit(Number(e.target.value));
                   setPage(1);
                 }}
-                className="h-10 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs font-semibold focus:ring-2 focus:ring-teal-500 shadow-sm cursor-pointer"
+                className="h-10 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs font-semibold focus:ring-2 focus:ring-orange-500 shadow-sm cursor-pointer"
               >
                 <option value={10}>10 per page</option>
                 <option value={25}>25 per page</option>
@@ -395,13 +395,13 @@ export default function UsersDirectoryPage({
               href={`/${slug}/users/types`}
               className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
-              <Tag className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+              <Tag className="w-3.5 h-3.5 text-orange-500 dark:text-orange-400" />
               <span>Manage Types</span>
             </Link>
 
             <Link
               href={`/${slug}/users/registrations`}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-teal-500/30 bg-teal-500/10 text-xs font-bold text-teal-700 dark:text-teal-300 hover:bg-teal-500/20 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-orange-500/30 bg-orange-500/10 text-xs font-bold text-orange-600 dark:text-orange-300 hover:bg-orange-500/20 transition-colors"
             >
               <Users className="w-3.5 h-3.5" />
               <span>Public Registrations</span>
@@ -425,7 +425,7 @@ export default function UsersDirectoryPage({
 
             <Button
               onClick={openCreateModal}
-              className="gap-2 bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-sm"
+              className="gap-2 bg-orange-500 hover:bg-orange-500 text-white text-xs font-bold shadow-sm"
             >
               <Plus className="w-4 h-4" />
               <span>Add Member</span>
@@ -470,12 +470,12 @@ export default function UsersDirectoryPage({
                       {/* 1. Name Column */}
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-teal-500/15 border border-teal-500/20 text-teal-600 dark:text-teal-300 flex items-center justify-center font-bold text-xs uppercase shrink-0">
+                          <div className="w-8 h-8 rounded-lg bg-orange-500/15 border border-orange-500/20 text-orange-500 dark:text-orange-300 flex items-center justify-center font-bold text-xs uppercase shrink-0">
                             {user.fullName.substring(0, 2)}
                           </div>
                           <Link
                             href={`/${slug}/users/${user.id}`}
-                            className="font-bold text-slate-900 dark:text-white text-sm hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                            className="font-bold text-slate-900 dark:text-white text-sm hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
                           >
                             {user.fullName}
                           </Link>
@@ -505,7 +505,7 @@ export default function UsersDirectoryPage({
                       {/* Classification & Role */}
                       <td className="py-4 px-6">
                         <div className="space-y-1">
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-teal-50 dark:bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-500/30">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-50 dark:bg-orange-950/20 dark:bg-orange-500/15 text-orange-600 dark:text-orange-300 border border-orange-200 dark:border-orange-800 dark:border-orange-500/30">
                             {user.userType?.name || "Member"}
                           </span>
                           <p className="text-[11px] text-slate-500 dark:text-slate-400">
@@ -519,7 +519,7 @@ export default function UsersDirectoryPage({
                         {user.enrollments && user.enrollments.length > 0 ? (
                           <div className="text-xs font-medium text-slate-800 dark:text-slate-200">
                             {user.enrollments[0].batch.class.name} •{" "}
-                            <span className="text-teal-600 dark:text-teal-400 font-bold">
+                            <span className="text-orange-500 dark:text-orange-400 font-bold">
                               {user.enrollments[0].batch.name}
                             </span>
                           </div>
@@ -550,7 +550,7 @@ export default function UsersDirectoryPage({
                           {/* View Icon */}
                           <Link
                             href={`/${slug}/users/${user.id}`}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-teal-600 dark:hover:text-teal-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-orange-500 dark:hover:text-orange-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                             title="View Full Profile & Custom Fields"
                           >
                             <Eye className="w-4 h-4" />
@@ -647,7 +647,7 @@ export default function UsersDirectoryPage({
                     profileData: isEditing ? prev.profileData : {},
                   }))
                 }
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-orange-500"
               >
                 {userTypes.map((ut) => (
                   <option key={ut.id} value={ut.id}>
@@ -666,7 +666,7 @@ export default function UsersDirectoryPage({
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, roleId: e.target.value }))
                 }
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-teal-500"
+                className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-orange-500"
               >
                 <option value="">Auto-assign based on User Type</option>
                 {roles.map((r) => (
@@ -737,7 +737,7 @@ export default function UsersDirectoryPage({
                   <button
                     type="button"
                     onClick={generateRandomPassword}
-                    className="text-[11px] text-teal-600 dark:text-teal-400 hover:text-teal-500 font-medium flex items-center gap-1"
+                    className="text-[11px] text-orange-500 dark:text-orange-400 hover:text-orange-500 font-medium flex items-center gap-1"
                   >
                     <Sparkles className="w-3 h-3" />
                     <span>Generate Strong Password</span>
@@ -765,7 +765,7 @@ export default function UsersDirectoryPage({
                 </div>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                   {!isEditing && (
-                    <>Default set to <code className="text-teal-700 dark:text-teal-300 font-mono font-bold">Password@123</code>. The member can use their email and password to log in.</>
+                    <>Default set to <code className="text-orange-600 dark:text-orange-300 font-mono font-bold">Password@123</code>. The member can use their email and password to log in.</>
                   )}
                 </p>
               </div>
@@ -775,7 +775,7 @@ export default function UsersDirectoryPage({
           {/* Dynamic Custom Fields Section */}
           {selectedUserType && selectedUserType.customFields.length > 0 && (
             <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
-              <h4 className="text-xs font-bold uppercase text-teal-700 dark:text-teal-400 mb-2 flex items-center gap-1.5">
+              <h4 className="text-xs font-bold uppercase text-orange-600 dark:text-orange-400 mb-2 flex items-center gap-1.5">
                 <Settings2 className="w-3.5 h-3.5" />
                 <span>Dynamic Profile Fields ({selectedUserType.name})</span>
               </h4>
@@ -797,7 +797,7 @@ export default function UsersDirectoryPage({
                           onChange={(e) =>
                             handleCustomFieldChange(field.fieldKey, e.target.value)
                           }
-                          className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-teal-500"
+                          className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-orange-500"
                         >
                           <option value="">Select option...</option>
                           {field.options.map((opt: string) => (
@@ -854,7 +854,7 @@ export default function UsersDirectoryPage({
             <Button
               type="submit"
               disabled={formSubmitting}
-              className="bg-teal-600 hover:bg-teal-500 text-white font-bold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-bold"
             >
               {formSubmitting ? (isEditing ? "Saving..." : "Creating...") : isEditing ? "Update Member" : "Save Member"}
             </Button>
@@ -934,7 +934,7 @@ export default function UsersDirectoryPage({
                   setResetPasswordValue(gen);
                   setShowResetPassword(true);
                 }}
-                className="text-[11px] text-teal-600 dark:text-teal-400 hover:text-teal-500 font-medium flex items-center gap-1"
+                className="text-[11px] text-orange-500 dark:text-orange-400 hover:text-orange-500 font-medium flex items-center gap-1"
               >
                 <Sparkles className="w-3 h-3" />
                 <span>Generate Strong</span>
@@ -974,7 +974,7 @@ export default function UsersDirectoryPage({
             <Button
               type="submit"
               disabled={resetSubmitting}
-              className="bg-teal-600 hover:bg-teal-500 text-white font-bold"
+              className="bg-orange-500 hover:bg-orange-500 text-white font-bold"
             >
               {resetSubmitting ? "Updating..." : "Update Password"}
             </Button>

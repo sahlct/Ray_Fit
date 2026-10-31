@@ -16,7 +16,7 @@ export default async function GlobalAuditPage() {
   });
 
   return (
-    <div className="flex-1 flex flex-col p-8 max-w-7xl mx-auto w-full space-y-6">
+    <div className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
       <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800">
         <div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white">
@@ -58,7 +58,7 @@ export default async function GlobalAuditPage() {
                           <strong className="text-slate-900 dark:text-white block font-semibold">
                             {log.tenant.name}
                           </strong>
-                          <span className="text-[11px] text-teal-600 dark:text-teal-400">
+                          <span className="text-[11px] text-orange-600 dark:text-orange-400">
                             /{log.tenant.slug}
                           </span>
                         </div>
@@ -78,7 +78,7 @@ export default async function GlobalAuditPage() {
                       </span>
                     </td>
 
-                    <td className="py-4 px-6 font-bold text-teal-600 dark:text-teal-400">
+                    <td className="py-4 px-6 font-bold text-orange-600 dark:text-orange-400">
                       {log.action}
                     </td>
 

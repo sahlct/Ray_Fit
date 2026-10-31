@@ -84,16 +84,16 @@ export default async function SuperAdminDashboardPage() {
         subtitle="Global executive metrics, cross-institution analytics, telemetry pipeline, and governance status"
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-8">
+      <main className="flex-1 p-4 sm:p-6 lg:p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6 sm:space-y-8">
         {/* Executive Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {/* Card 1: School Tenants */}
           <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 shadow-sm dark:shadow-none relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Managed Tenants
               </span>
-              <div className="w-8 h-8 rounded-lg bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-orange-500/15 text-orange-600 dark:text-orange-400 flex items-center justify-center">
                 <Building2 className="w-4 h-4" />
               </div>
             </div>
@@ -179,7 +179,7 @@ export default async function SuperAdminDashboardPage() {
               </div>
               <Link
                 href="/admin/subscriptions"
-                className="text-xs text-teal-600 dark:text-teal-400 hover:underline font-semibold"
+                className="text-xs text-orange-600 dark:text-orange-400 hover:underline font-semibold"
               >
                 Manage →
               </Link>
@@ -206,7 +206,7 @@ export default async function SuperAdminDashboardPage() {
                 </div>
                 <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                   <div
-                    className="h-full bg-teal-500 rounded-full"
+                    className="h-full bg-orange-500 rounded-full"
                     style={{ width: `${totalSchools ? (growthCount / totalSchools) * 100 : 0}%` }}
                   />
                 </div>
@@ -233,7 +233,7 @@ export default async function SuperAdminDashboardPage() {
               <div className="flex items-center gap-2 pt-1">
                 <Link
                   href="/admin/subscriptions"
-                  className="flex-1 text-center py-2 px-3 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs transition-colors"
+                  className="flex-1 text-center py-2 px-3 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-xs shadow-md shadow-orange-500/20 transition-all"
                 >
                   Record Payment
                 </Link>
@@ -260,7 +260,7 @@ export default async function SuperAdminDashboardPage() {
               </div>
               <Link
                 href="/admin"
-                className="text-xs text-teal-600 dark:text-teal-400 hover:underline font-semibold"
+                className="text-xs text-orange-600 dark:text-orange-400 hover:underline font-semibold"
               >
                 View Full Directory ({totalSchools}) →
               </Link>
@@ -272,7 +272,7 @@ export default async function SuperAdminDashboardPage() {
                   <div className="flex items-center gap-3 min-w-0">
                     <div
                       className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-white text-xs shrink-0"
-                      style={{ backgroundColor: t.primaryColor || "#0f766e" }}
+                      style={{ backgroundColor: t.primaryColor || "#FF6B2C" }}
                     >
                       <Building2 className="w-4 h-4 text-white" />
                     </div>
@@ -298,7 +298,7 @@ export default async function SuperAdminDashboardPage() {
                     </span>
                     <Link
                       href={`/${t.slug}/dashboard`}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-orange-500 dark:hover:text-orange-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                       title="Launch School Portal"
                     >
                       <ExternalLink className="w-4 h-4" />
@@ -314,7 +314,7 @@ export default async function SuperAdminDashboardPage() {
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 shadow-sm dark:shadow-none space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <History className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              <History className="w-5 h-5 text-orange-500" />
               <div>
                 <h3 className="font-bold text-slate-900 dark:text-white text-base">
                   Recent Platform Security &amp; Mutation Events
@@ -326,7 +326,7 @@ export default async function SuperAdminDashboardPage() {
             </div>
             <Link
               href="/admin/audit"
-              className="text-xs text-teal-600 dark:text-teal-400 hover:underline font-semibold"
+              className="text-xs text-orange-600 dark:text-orange-400 hover:underline font-semibold"
             >
               Full Audit Trail →
             </Link>
@@ -336,7 +336,7 @@ export default async function SuperAdminDashboardPage() {
             {recentAuditLogs.map((log) => (
               <div key={log.id} className="py-2.5 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3 min-w-0">
-                  <span className="text-teal-600 dark:text-teal-400 font-bold shrink-0">
+                  <span className="text-orange-600 dark:text-orange-400 font-bold shrink-0">
                     {log.action}
                   </span>
                   <span className="text-slate-500 dark:text-slate-400 truncate">

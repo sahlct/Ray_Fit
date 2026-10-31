@@ -27,8 +27,8 @@ export default function NewTenantWizardPage() {
     contactEmail: "",
     contactPhone: "",
     address: "",
-    primaryColor: "#0f766e",
-    secondaryColor: "#f59e0b",
+    primaryColor: "#FF6B2C",
+    secondaryColor: "#FF2D78",
     adminFullName: "",
     adminEmail: "",
     adminPassword: "SchoolAdmin@2026",
@@ -76,7 +76,7 @@ export default function NewTenantWizardPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col p-8 max-w-4xl mx-auto w-full space-y-8">
+    <div className="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full space-y-8">
       {/* Top Header */}
       <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800">
         <div>
@@ -97,7 +97,7 @@ export default function NewTenantWizardPage() {
       </div>
 
       {createdTenant ? (
-        <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 dark:bg-emerald-950/20 p-8 text-center space-y-6 shadow-sm dark:shadow-none">
+        <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 dark:bg-emerald-950/20 p-4 sm:p-6 lg:p-8 text-center space-y-6 shadow-sm dark:shadow-none">
           <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-lg">
             <CheckCircle2 className="w-8 h-8" />
           </div>
@@ -114,7 +114,7 @@ export default function NewTenantWizardPage() {
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left max-w-md mx-auto font-mono text-xs space-y-2">
             <div>
               <span className="text-slate-500">School Portal URL:</span>{" "}
-              <strong className="text-teal-600 dark:text-teal-400">/{createdTenant.slug}/login</strong>
+              <strong className="text-orange-500 dark:text-orange-400">/{createdTenant.slug}/login</strong>
             </div>
             <div>
               <span className="text-slate-500">Admin Email:</span>{" "}
@@ -129,7 +129,7 @@ export default function NewTenantWizardPage() {
           <div className="flex items-center justify-center gap-4">
             <Link
               href={`/${createdTenant.slug}/dashboard`}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-sm shadow-lg transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-sm shadow-lg shadow-orange-500/20 transition-all"
             >
               <span>Launch New School Dashboard</span>
               <ArrowRight className="w-4 h-4" />
@@ -144,8 +144,8 @@ export default function NewTenantWizardPage() {
                   contactEmail: "",
                   contactPhone: "",
                   address: "",
-                  primaryColor: "#0f766e",
-                  secondaryColor: "#f59e0b",
+                  primaryColor: "#FF6B2C",
+                  secondaryColor: "#FF2D78",
                   adminFullName: "",
                   adminEmail: "",
                   adminPassword: "SchoolAdmin@2026",
@@ -168,7 +168,7 @@ export default function NewTenantWizardPage() {
           {/* Section 1: School Identity */}
           <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 space-y-4 shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+              <Building2 className="w-4 h-4 text-orange-500" />
               <span>1. School Identity & Unique Slug</span>
             </h3>
 
@@ -256,7 +256,7 @@ export default function NewTenantWizardPage() {
           {/* Section 2: Branding */}
           <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 space-y-4 shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-              <Palette className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+              <Palette className="w-4 h-4 text-orange-500" />
               <span>2. Visual Branding & Theme Tokens</span>
             </h3>
 
@@ -312,7 +312,7 @@ export default function NewTenantWizardPage() {
           {/* Section 3: Initial Admin Account */}
           <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 space-y-4 shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-              <UserCheck className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+              <UserCheck className="w-4 h-4 text-orange-500" />
               <span>3. Primary Company Super Admin Account</span>
             </h3>
 
@@ -386,7 +386,7 @@ export default function NewTenantWizardPage() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold px-6 h-11"
+              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-6 h-11 shadow-lg shadow-orange-500/20"
             >
               {isSubmitting ? "Provisioning..." : "Execute Transactional Provisioning"}
             </Button>

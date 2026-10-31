@@ -82,13 +82,13 @@ export default async function UserDetailsPage(props: {
         tenantSlug={slug}
       />
 
-      <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
         {/* Breadcrumb Navigation */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
             <Link
               href={`/${slug}/users`}
-              className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300"
+              className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Users Directory</span>
@@ -110,7 +110,7 @@ export default async function UserDetailsPage(props: {
         <div className="glass-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-teal-500/20 border border-teal-500/30 text-teal-600 dark:text-teal-300 font-black text-2xl flex items-center justify-center shadow-md">
+              <div className="w-16 h-16 rounded-2xl bg-orange-500/20 border border-orange-500/30 text-orange-500 dark:text-orange-300 font-black text-2xl flex items-center justify-center shadow-md">
                 {user.fullName.substring(0, 2).toUpperCase()}
               </div>
               <div>
@@ -118,7 +118,7 @@ export default async function UserDetailsPage(props: {
                   <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                     {user.fullName}
                   </h2>
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-teal-50 dark:bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-500/30">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-50 dark:bg-orange-950/20 dark:bg-orange-500/15 text-orange-600 dark:text-orange-300 border border-orange-200 dark:border-orange-800 dark:border-orange-500/30">
                     {user.userType?.name || "Member"}
                   </span>
                   {user.isActive ? (
@@ -159,7 +159,7 @@ export default async function UserDetailsPage(props: {
             {/* Academic Enrollment */}
             <div className="glass-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-4">
               <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-                <GraduationCap className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                <GraduationCap className="w-4 h-4 text-orange-500 dark:text-orange-400" />
                 <span>Class & Batch Enrollment</span>
               </h3>
 
@@ -179,7 +179,7 @@ export default async function UserDetailsPage(props: {
                         </p>
                       </div>
                       <div className="text-right">
-                        <span className="text-xs font-mono font-bold text-teal-700 dark:text-teal-400 block">
+                        <span className="text-xs font-mono font-bold text-orange-600 dark:text-orange-400 block">
                           Roll: {en.rollNumber || "N/A"}
                         </span>
                         <span className="text-[11px] text-slate-400 dark:text-slate-500">
@@ -207,7 +207,7 @@ export default async function UserDetailsPage(props: {
                 <div className="p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">
-                      {user.assignedDevices[0].vendorName || "Ray Fit Smart Band"}
+                      {user.assignedDevices[0].vendorName || "Rays Fit Smart Band"}
                     </span>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30">
                       Synced

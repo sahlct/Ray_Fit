@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting Ray Fit database seeding...');
+  console.log('🌱 Starting Rays Fit database seeding...');
 
   // 1. Clean up existing data
   await (prisma as any).adBanner?.deleteMany?.().catch(() => {});
@@ -110,7 +110,7 @@ async function main() {
   const superAdmin = await prisma.user.create({
     data: {
       email: 'sahl.prosevo@gmail.com',
-      fullName: 'Ray Fit Master Administrator',
+      fullName: 'Rays Fit Master Administrator',
       phone: '+1-555-0100',
       passwordHash: superAdminPasswordHash,
       platformRole: PlatformRole.SUPER_ADMIN,
@@ -885,7 +885,7 @@ async function main() {
     },
   });
 
-  console.log('🎉 Ray Fit database successfully seeded with complete multi-tenant demonstration data!');
+  console.log('🎉 Rays Fit database successfully seeded with complete multi-tenant demonstration data!');
 }
 
 main()

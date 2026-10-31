@@ -54,9 +54,9 @@ export function TenantLoginForm({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between p-6 selection:bg-teal-500 selection:text-white transition-colors">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between p-6 selection:bg-orange-500 selection:text-white transition-colors">
       {/* Background glow */}
-      <div className="absolute top-1/4 left-1/3 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/3 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Top Header Link */}
       <div className="relative z-10 flex items-center justify-between max-w-5xl mx-auto w-full">
@@ -97,8 +97,8 @@ export function TenantLoginForm({
             <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               {tenantName}
             </h1>
-            <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold uppercase tracking-wider mt-1.5">
-              Ray Fit Portal • /{tenantSlug}/login
+            <p className="text-xs bg-gradient-to-r from-[#FF6B2C] to-[#FF2D78] bg-clip-text text-transparent font-semibold uppercase tracking-wider mt-1.5">
+              Rays Fit Portal • /{tenantSlug}/login
             </p>
           </div>
 
@@ -157,7 +157,7 @@ export function TenantLoginForm({
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full mt-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold h-11 transition-all"
+              className="w-full mt-2 bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold h-11 transition-all"
             >
               {isLoading ? "Authenticating..." : "Access Health Dashboard"}
             </Button>
@@ -170,14 +170,14 @@ export function TenantLoginForm({
             href="/"
             className="text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
           >
-            ← Back to Ray Fit Main Portal
+            ← Back to Rays Fit Main Portal
           </Link>
         </div>
       </div>
 
       {/* Footer */}
       <footer className="relative z-10 text-center text-xs text-slate-500 dark:text-slate-600">
-        <p>© 2026 Ray Fit Platform. {tenantName} Portal.</p>
+        <p>© 2026 Rays Fit Platform. {tenantName} Portal.</p>
       </footer>
     </div>
   );

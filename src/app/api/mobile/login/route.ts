@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
         email: user.email,
         phone: user.phone,
         tenantId: user.tenantId,
-        tenantName: user.tenant?.name || 'Ray Fit Master',
+        tenantName: user.tenant?.name || 'Rays Fit Master',
         tenantSlug: user.tenant?.slug || 'admin',
         tenantLogo: user.tenant?.logoUrl || null,
         primaryColor: user.tenant?.primaryColor || '#0f766e',
