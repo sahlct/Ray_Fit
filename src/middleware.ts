@@ -6,7 +6,7 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.NEXTAUTH_SECRET || 'ray_fit_super_secret_jwt_key_2026_fitness_health_secure_token'
 );
 
-const SESSION_COOKIE_NAME = 'rayfit_session';
+const SESSION_COOKIE_NAME = 'raysfit_session';
 
 interface SessionPayload {
   id: string;
@@ -32,7 +32,9 @@ async function getMiddlewareSession(request: NextRequest): Promise<SessionPayloa
     }
   }
 
-  const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+  const token =
+    request.cookies.get(SESSION_COOKIE_NAME)?.value ||
+    request.cookies.get('rayfit_session')?.value;
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);

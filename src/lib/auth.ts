@@ -7,7 +7,7 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.NEXTAUTH_SECRET || 'ray_fit_super_secret_jwt_key_2026_fitness_health_secure_token'
 );
 
-const SESSION_COOKIE_NAME = 'rayfit_session';
+const SESSION_COOKIE_NAME = 'raysfit_session';
 
 export interface SessionUser {
   id: string;
@@ -43,7 +43,9 @@ export async function verifySessionToken(token: string): Promise<SessionUser | n
 
 export async function getSession(): Promise<SessionUser | null> {
   const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  const token =
+    cookieStore.get(SESSION_COOKIE_NAME)?.value ||
+    cookieStore.get('rayfit_session')?.value;
   if (!token) return null;
   return await verifySessionToken(token);
 }
@@ -63,6 +65,7 @@ export async function setSessionCookie(sessionUser: SessionUser) {
 export async function clearSessionCookie() {
   const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE_NAME);
+  cookieStore.delete('rayfit_session');
 }
 
 export async function authenticateUser(

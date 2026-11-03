@@ -393,7 +393,7 @@ async function main() {
 
   // Setup Green Valley
   const gv = await setupTenant(greenValley.id, greenValley.slug);
-  const genericPasswordHash = await bcrypt.hash('RayFit@2026', 10);
+  const genericPasswordHash = await bcrypt.hash('RaysFit@2026', 10);
 
   // Users for Green Valley
   const gvAdmin = await prisma.user.create({

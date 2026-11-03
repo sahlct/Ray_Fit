@@ -562,7 +562,7 @@ model AuditLog {
 
 ### 4.1 URL Routing Strategy
 To achieve high-trust branding and strict tenant identification without exposing internal IDs:
-- **Platform Super Admin:** Accesses `/admin` or dedicated subdomain `admin.rayfit.io`.
+- **Platform Super Admin:** Accesses `/admin` or dedicated subdomain `admin.raysfit.io`.
 - **Tenant Specific Routing:** Root path uses the tenant's validated unique slug:
   - Login: `/[tenant-slug]/login`
   - Dashboard: `/[tenant-slug]/dashboard`

@@ -29,7 +29,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                const t = localStorage.getItem('rayfit_theme');
+                const t = localStorage.getItem('raysfit_theme') || localStorage.getItem('rayfit_theme');
                 if (t === 'light') {
                   document.documentElement.classList.remove('dark');
                   document.documentElement.classList.add('light');

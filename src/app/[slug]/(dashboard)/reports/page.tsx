@@ -113,7 +113,7 @@ export default function ReportsAnalyticsPage({
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `RayFit_${slug}_Health_Report.csv`);
+    link.setAttribute("download", `RaysFit_${slug}_Health_Report.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

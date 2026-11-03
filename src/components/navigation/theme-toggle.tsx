@@ -10,7 +10,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
   useEffect(() => {
     setMounted(true);
     // Determine active theme from document class or localStorage
-    const savedTheme = localStorage.getItem("rayfit_theme") as "light" | "dark" | null;
+    const savedTheme = (localStorage.getItem("raysfit_theme") || localStorage.getItem("rayfit_theme")) as "light" | "dark" | null;
     const isDarkClass = document.documentElement.classList.contains("dark");
     const initial = savedTheme || (isDarkClass ? "dark" : "light");
     setTheme(initial);
@@ -20,8 +20,10 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       setTheme(e.detail);
     };
 
+    window.addEventListener("raysfit-theme-change", handleThemeChange as EventListener);
     window.addEventListener("rayfit-theme-change", handleThemeChange as EventListener);
     return () => {
+      window.removeEventListener("raysfit-theme-change", handleThemeChange as EventListener);
       window.removeEventListener("rayfit-theme-change", handleThemeChange as EventListener);
     };
   }, []);
@@ -30,6 +32,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
     try {
+      localStorage.setItem("raysfit_theme", nextTheme);
       localStorage.setItem("rayfit_theme", nextTheme);
     } catch (_) {}
 
@@ -43,7 +46,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
 
     // Broadcast theme update to all other toggle buttons
     window.dispatchEvent(
-      new CustomEvent("rayfit-theme-change", { detail: nextTheme })
+      new CustomEvent("raysfit-theme-change", { detail: nextTheme })
     );
   };
 

@@ -464,11 +464,11 @@ export default function RootHomePage() {
             <div className="mt-8 pt-6 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-orange-400" />
-                <span>inquiries@rayfit.io</span>
+                <span>inquiries@raysfit.io</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-orange-400" />
-                <span>+1 (800) 555-RAYFIT</span>
+                <span>+1 (800) 555-RAYSFIT</span>
               </div>
               <div className="flex items-center gap-2">
                 <Lock className="w-4 h-4 text-orange-400" />
