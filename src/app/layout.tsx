@@ -7,9 +7,28 @@ import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Rays Fit — School Health & Fitness Monitoring Platform",
+  title: "RaysFit – Wearable Intelligence & Benchmarking Platform",
   description:
-    "Enterprise multi-tenant student health monitoring platform with connected wearable smart bands, dynamic benchmarks, and automated evaluation.",
+    "Discover RaysFit, a wearable intelligence and benchmarking platform for education, sports and wellness organisations. Connect devices, monitor participation and measure programme progress.",
+  keywords: [
+    "RaysFit",
+    "Wearable Intelligence",
+    "Benchmarking Platform",
+    "Student Wellness",
+    "Sports Performance",
+    "Wearable Telemetry",
+    "Smartband Integration",
+    "Rays Sports Network",
+  ],
+  authors: [{ name: "Rays Sports Network Inc." }],
+  openGraph: {
+    title: "RaysFit – Wearable Intelligence & Benchmarking Platform",
+    description:
+      "One platform. Your benchmarks. Measurable progress. Connect wearable devices, establish meaningful benchmarks, monitor participation and measure progress.",
+    url: "https://raysfit.io",
+    siteName: "RaysFit",
+    type: "website",
+  },
   icons: {
     icon: "/brand/png/raysfit-icon-180.png",
     shortcut: "/brand/png/raysfit-icon-32.png",

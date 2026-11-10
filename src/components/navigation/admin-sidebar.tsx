@@ -33,6 +33,11 @@ export function AdminSidebar() {
       icon: Building2,
     },
     {
+      title: "Platform Super Admins",
+      href: "/admin/super-admins",
+      icon: Users2,
+    },
+    {
       title: "Create School Tenant",
       href: "/admin/tenants/new",
       icon: ShieldAlert,

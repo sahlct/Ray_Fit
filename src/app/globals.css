@@ -93,7 +93,9 @@
   }
 }
 
+html,
 body {
+  overflow-x: clip;
   background-color: var(--background);
   color: var(--foreground);
   font-feature-settings: "rlig" 1, "calt" 1;
