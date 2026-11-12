@@ -90,11 +90,8 @@ export default function BatchFullDetailsPage({
   const [allStudents, setAllStudents] = useState<{ id: string; fullName: string; email: string }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Group / Squad Filtering & Student Search
-  const [activeSquad, setActiveSquad] = useState<string>("all");
+  // Student Search
   const [searchStudent, setSearchStudent] = useState("");
-  // Local state for student squads assignments (e.g. Alpha, Beta, Gamma)
-  const [studentSquads, setStudentSquads] = useState<Record<string, string>>({});
 
   // Modals
   const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
@@ -117,19 +114,6 @@ export default function BatchFullDetailsPage({
 
       if (bData.batch) {
         setBatchData(bData.batch);
-        // Initialize default squads for students based on index or custom field
-        const squads: Record<string, string> = {};
-        bData.batch.enrollments.forEach((e: StudentEnrollmentItem, idx: number) => {
-          const customSquad = e.student.profileData?.squad;
-          if (customSquad) {
-            squads[e.id] = customSquad;
-          } else {
-            // Distribute across squads: Alpha, Beta, Gamma
-            const squadNames = ["Squad Alpha (Cardio)", "Squad Beta (Strength)", "Squad Gamma (Agility)"];
-            squads[e.id] = squadNames[idx % 3];
-          }
-        });
-        setStudentSquads(squads);
       }
 
       if (uData.users) {
@@ -198,21 +182,17 @@ export default function BatchFullDetailsPage({
     }
   };
 
-  const handleSquadChange = (enrollmentId: string, newSquad: string) => {
-    setStudentSquads((prev) => ({ ...prev, [enrollmentId]: newSquad }));
-  };
-
   if (isLoading) {
     return (
       <div className="flex-1 flex flex-col">
         <TenantHeader
           title="Loading Batch Details..."
-          subtitle="Fetching student cohort, wearable bands, and tactical training squads"
+          subtitle="Fetching student cohort, wearable bands, and health tracking"
           tenantSlug={slug}
         />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full flex items-center justify-center">
           <div className="glass-card rounded-2xl p-12 text-center text-slate-400">
-            Loading batch roster and groups...
+            Loading batch roster...
           </div>
         </main>
       </div>
@@ -229,13 +209,13 @@ export default function BatchFullDetailsPage({
         />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
           <div className="glass-card rounded-2xl p-4 sm:p-6 lg:p-8 text-center text-slate-300">
-            <p className="mb-4">Batch record not found in this class.</p>
+            <p className="mb-4">Batch record not found in this program.</p>
             <Link
               href={`/${slug}/classes/${classId}`}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-orange-500 text-white font-bold text-xs"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Back to Class</span>
+              <span>Back to Program</span>
             </Link>
           </div>
         </main>
@@ -249,34 +229,20 @@ export default function BatchFullDetailsPage({
     (e) => e.student.assignedDevices && e.student.assignedDevices.length > 0
   ).length;
 
-  // Filter students by squad and search query
+  // Filter students by search query
   const filteredEnrollments = batchData.enrollments.filter((e) => {
-    const assignedSquad = studentSquads[e.id] || "Squad Alpha (Cardio)";
-    const matchesSquad = activeSquad === "all" || assignedSquad.startsWith(activeSquad);
-    const matchesSearch =
+    return (
       e.student.fullName.toLowerCase().includes(searchStudent.toLowerCase()) ||
       e.student.email.toLowerCase().includes(searchStudent.toLowerCase()) ||
-      (e.rollNumber && e.rollNumber.toLowerCase().includes(searchStudent.toLowerCase()));
-
-    return matchesSquad && matchesSearch;
+      (e.rollNumber && e.rollNumber.toLowerCase().includes(searchStudent.toLowerCase()))
+    );
   });
-
-  // Squad counts
-  const squadAlphaCount = batchData.enrollments.filter((e) =>
-    (studentSquads[e.id] || "").includes("Alpha")
-  ).length;
-  const squadBetaCount = batchData.enrollments.filter((e) =>
-    (studentSquads[e.id] || "").includes("Beta")
-  ).length;
-  const squadGammaCount = batchData.enrollments.filter((e) =>
-    (studentSquads[e.id] || "").includes("Gamma")
-  ).length;
 
   return (
     <div className="flex-1 flex flex-col">
       <TenantHeader
         title={`${batchData.name} — Batch Full Details`}
-        subtitle={`${batchData.class.name} (${batchData.class.academicPeriod}) • Tactical Student Groups & Live Health Tracking`}
+        subtitle={`${batchData.class.name} (${batchData.class.academicPeriod}) • Student Cohort Roster & Live Health Tracking`}
         tenantSlug={slug}
       />
 
@@ -288,7 +254,7 @@ export default function BatchFullDetailsPage({
               href={`/${slug}/classes`}
               className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
             >
-              Classes
+              Programs
             </Link>
             <span>/</span>
             <Link
@@ -388,99 +354,7 @@ export default function BatchFullDetailsPage({
           </div>
         </div>
 
-        {/* Section 1: Tactical Student Groups / Squads Division */}
-        <div className="glass-card rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-orange-500 dark:text-orange-400" />
-                <span>Tactical Student Groups within {batchData.name}</span>
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Subdivide students into specialized training squads for differentiated fitness drills & benchmark tracking
-              </p>
-            </div>
-
-            {/* Squad Tabs */}
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex-wrap">
-              <button
-                onClick={() => setActiveSquad("all")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeSquad === "all"
-                    ? "bg-orange-500 text-white shadow font-bold"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                }`}
-              >
-                All Roster ({batchData.enrollments.length})
-              </button>
-              <button
-                onClick={() => setActiveSquad("Squad Alpha")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeSquad === "Squad Alpha"
-                    ? "bg-orange-500 text-white shadow font-bold"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                }`}
-              >
-                Squad Alpha — Cardio ({squadAlphaCount})
-              </button>
-              <button
-                onClick={() => setActiveSquad("Squad Beta")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeSquad === "Squad Beta"
-                    ? "bg-orange-500 text-white shadow font-bold"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                }`}
-              >
-                Squad Beta — Strength ({squadBetaCount})
-              </button>
-              <button
-                onClick={() => setActiveSquad("Squad Gamma")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeSquad === "Squad Gamma"
-                    ? "bg-orange-500 text-white shadow font-bold"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                }`}
-              >
-                Squad Gamma — Agility ({squadGammaCount})
-              </button>
-            </div>
-          </div>
-
-          {/* Quick squad summary callout cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-            <div className="p-4 rounded-xl border border-orange-500/20 bg-orange-500/5">
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="font-bold text-orange-600 dark:text-orange-300">Squad Alpha (Cardio)</span>
-                <span className="font-mono text-orange-500 dark:text-orange-400 font-bold">{squadAlphaCount} Students</span>
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Aerobic capacity, stamina, target HR zone 130-160 bpm
-              </p>
-            </div>
-
-            <div className="p-4 rounded-xl border border-indigo-500/20 bg-indigo-500/5">
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="font-bold text-indigo-700 dark:text-indigo-300">Squad Beta (Strength)</span>
-                <span className="font-mono text-indigo-600 dark:text-indigo-400 font-bold">{squadBetaCount} Students</span>
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Core resistance, posture, muscular recovery & power
-              </p>
-            </div>
-
-            <div className="p-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5">
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="font-bold text-cyan-700 dark:text-cyan-300">Squad Gamma (Agility)</span>
-                <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">{squadGammaCount} Students</span>
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Shuttle run, sprint interval, reaction speed & VO2 max
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Section 2: Batch Student Roster */}
+        {/* Batch Student Roster */}
         <div className="glass-card rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm dark:shadow-none">
           <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -488,7 +362,7 @@ export default function BatchFullDetailsPage({
                 Batch Student Roster ({filteredEnrollments.length} Students)
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Complete member profiles, squad assignment, smart bands, and health metrics
+                Complete member profiles, smart bands, and health metrics
               </p>
             </div>
 
@@ -510,7 +384,6 @@ export default function BatchFullDetailsPage({
                   <th className="py-3.5 px-6 w-14">#</th>
                   <th className="py-3.5 px-6">Student</th>
                   <th className="py-3.5 px-6">Roll Code</th>
-                  <th className="py-3.5 px-6">Assigned Squad</th>
                   <th className="py-3.5 px-6">Smart Band</th>
                   <th className="py-3.5 px-6">Guardian / Profile</th>
                   <th className="py-3.5 px-6 text-right">Actions</th>
@@ -519,7 +392,6 @@ export default function BatchFullDetailsPage({
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {filteredEnrollments.length > 0 ? (
                   filteredEnrollments.map((e, idx) => {
-                    const currentSquad = studentSquads[e.id] || "Squad Alpha (Cardio)";
                     const pData = e.student.profileData || {};
 
                     return (
@@ -553,19 +425,6 @@ export default function BatchFullDetailsPage({
                         {/* Roll Code */}
                         <td className="py-4 px-6 text-xs font-mono text-orange-500 dark:text-orange-400 font-bold">
                           {e.rollNumber || "UNASSIGNED"}
-                        </td>
-
-                        {/* Squad Selector */}
-                        <td className="py-4 px-6">
-                          <select
-                            value={currentSquad}
-                            onChange={(ev) => handleSquadChange(e.id, ev.target.value)}
-                            className="h-8 px-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-semibold focus:ring-1 focus:ring-orange-500"
-                          >
-                            <option value="Squad Alpha (Cardio)">Squad Alpha (Cardio)</option>
-                            <option value="Squad Beta (Strength)">Squad Beta (Strength)</option>
-                            <option value="Squad Gamma (Agility)">Squad Gamma (Agility)</option>
-                          </select>
                         </td>
 
                         {/* Smart Band */}

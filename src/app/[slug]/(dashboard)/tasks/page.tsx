@@ -15,6 +15,9 @@ import {
   AlertOctagon,
   Trash2,
   BellRing,
+  GraduationCap,
+  ChevronRight,
+  ShieldAlert,
 } from "lucide-react";
 import { TenantHeader } from "@/components/navigation/tenant-header";
 import { Button } from "@/components/ui/button";
@@ -48,8 +51,111 @@ interface TaskItem {
     id: string;
     startDate: string;
     endDate: string;
-    batch: { name: string; class: { name: string } } | null;
+    batch: { name: string; class?: { name: string } } | null;
+    class: { name: string } | null;
   }[];
+}
+
+interface CriticalZoneForm {
+  id: string;
+  type: "BELOW" | "ABOVE";
+  value: string;
+  label: string;
+}
+
+interface MetricOptionForm {
+  id: string;
+  metricType: string;
+  unit: string;
+  operator: string;
+  minValue: string;
+  maxValue: string;
+  targetValue: string;
+  clinicalNotes: string;
+  criticalZones: CriticalZoneForm[];
+}
+
+const ALL_METRIC_TYPES = [
+  { value: "STEPS", label: "Steps (Daily ambulatory count)" },
+  { value: "HEART_RATE", label: "Heart Rate (Pulse bpm)" },
+  { value: "BLOOD_PRESSURE_SYSTOLIC", label: "Blood Pressure (Systolic mmHg)" },
+  { value: "SLEEP_DURATION_MINUTES", label: "Sleep Duration (Minutes)" },
+  { value: "SPO2_PERCENTAGE", label: "Blood Oxygen (SpO2 %)" },
+  { value: "CALORIES_BURNED", label: "Calories Burned (kcal)" },
+];
+
+const DEFAULT_METRIC_CONFIGS: Record<string, { unit: string; operator: string; minValue: string; maxValue: string; criticalZones: CriticalZoneForm[] }> = {
+  STEPS: {
+    unit: "steps",
+    operator: "GREATER_THAN_OR_EQUAL",
+    minValue: "8000",
+    maxValue: "",
+    criticalZones: [],
+  },
+  HEART_RATE: {
+    unit: "bpm",
+    operator: "LESS_THAN_OR_EQUAL",
+    minValue: "",
+    maxValue: "75",
+    criticalZones: [
+      { id: "c1", type: "BELOW", value: "40", label: "Critical Low (Bradycardia)" },
+      { id: "c2", type: "ABOVE", value: "120", label: "Critical High (Tachycardia)" },
+    ],
+  },
+  BLOOD_PRESSURE_SYSTOLIC: {
+    unit: "mmHg",
+    operator: "BETWEEN_INCLUSIVE",
+    minValue: "90",
+    maxValue: "120",
+    criticalZones: [
+      { id: "c1", type: "BELOW", value: "85", label: "Hypotension Alert" },
+      { id: "c2", type: "ABOVE", value: "140", label: "Hypertension Alert" },
+    ],
+  },
+  SLEEP_DURATION_MINUTES: {
+    unit: "minutes",
+    operator: "GREATER_THAN_OR_EQUAL",
+    minValue: "480",
+    maxValue: "",
+    criticalZones: [],
+  },
+  SPO2_PERCENTAGE: {
+    unit: "%",
+    operator: "GREATER_THAN_OR_EQUAL",
+    minValue: "95",
+    maxValue: "",
+    criticalZones: [
+      { id: "c1", type: "BELOW", value: "90", label: "Hypoxia Critical Alert" },
+    ],
+  },
+  CALORIES_BURNED: {
+    unit: "kcal",
+    operator: "GREATER_THAN_OR_EQUAL",
+    minValue: "500",
+    maxValue: "",
+    criticalZones: [],
+  },
+};
+
+function createInitialMetric(type: string): MetricOptionForm {
+  const conf = DEFAULT_METRIC_CONFIGS[type] || {
+    unit: "units",
+    operator: "GREATER_THAN_OR_EQUAL",
+    minValue: "100",
+    maxValue: "",
+    criticalZones: [],
+  };
+  return {
+    id: Math.random().toString(36).substring(2, 9),
+    metricType: type,
+    unit: conf.unit,
+    operator: conf.operator,
+    minValue: conf.minValue,
+    maxValue: conf.maxValue,
+    targetValue: conf.minValue || conf.maxValue || "",
+    clinicalNotes: "",
+    criticalZones: [...conf.criticalZones.map((z) => ({ ...z, id: Math.random().toString(36).substring(2, 9) }))],
+  };
 }
 
 export default function HealthTasksPage({
@@ -61,6 +167,7 @@ export default function HealthTasksPage({
 
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [batches, setBatches] = useState<{ id: string; name: string; className: string }[]>([]);
+  const [programs, setPrograms] = useState<{ id: string; name: string; academicPeriod: string }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Modals
@@ -68,66 +175,26 @@ export default function HealthTasksPage({
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState("");
 
+  // Task Creation Form: Multi-metric support
   const [taskForm, setTaskForm] = useState({
     title: "",
     description: "",
-    metricType: "STEPS",
-    unit: "steps",
-    operator: "GREATER_THAN_OR_EQUAL",
-    minValue: "8000",
-    maxValue: "",
-    targetValue: "8000",
-    clinicalNotes: "",
-    criticalZones: [] as {
-      id: string;
-      type: "BELOW" | "ABOVE";
-      value: string;
-      label: string;
-    }[],
+    metrics: [createInitialMetric("STEPS")] as MetricOptionForm[],
   });
 
-  const handleAddCriticalZone = () => {
-    setTaskForm((prev) => ({
-      ...prev,
-      criticalZones: [
-        ...prev.criticalZones,
-        {
-          id: Math.random().toString(36).substring(2, 9),
-          type: "ABOVE",
-          value: "",
-          label: "",
-        },
-      ],
-    }));
-  };
-
-  const handleRemoveCriticalZone = (id: string) => {
-    setTaskForm((prev) => ({
-      ...prev,
-      criticalZones: prev.criticalZones.filter((z) => z.id !== id),
-    }));
-  };
-
-  const handleUpdateCriticalZone = (
-    id: string,
-    field: "type" | "value" | "label",
-    value: string
-  ) => {
-    setTaskForm((prev) => ({
-      ...prev,
-      criticalZones: prev.criticalZones.map((z) =>
-        z.id === id ? { ...z, [field]: value } : z
-      ),
-    }));
-  };
-
+  // Assign Form: Supports both entire Program and Batch
   const [assignForm, setAssignForm] = useState({
+    scope: "BATCH" as "BATCH" | "PROGRAM",
     batchId: "",
+    classId: "",
     startDate: new Date().toISOString().split("T")[0],
     endDate: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
     startTime: "08:00",
     endTime: "09:30",
   });
+
+  const [modalError, setModalError] = useState("");
+  const [modalSuccess, setModalSuccess] = useState("");
 
   const calculateDuration = (start: string, end: string) => {
     try {
@@ -146,9 +213,6 @@ export default function HealthTasksPage({
     }
   };
 
-  const [modalError, setModalError] = useState("");
-  const [modalSuccess, setModalSuccess] = useState("");
-
   const loadData = async () => {
     setIsLoading(true);
     try {
@@ -161,6 +225,12 @@ export default function HealthTasksPage({
 
       if (tData.tasks) setTasks(tData.tasks);
       if (cData.classes) {
+        setPrograms(cData.classes.map((c: any) => ({
+          id: c.id,
+          name: c.name,
+          academicPeriod: c.academicPeriod,
+        })));
+
         const flatBatches: any[] = [];
         cData.classes.forEach((c: any) => {
           c.batches.forEach((b: any) => {
@@ -168,8 +238,12 @@ export default function HealthTasksPage({
           });
         });
         setBatches(flatBatches);
+
         if (flatBatches.length > 0 && !assignForm.batchId) {
           setAssignForm((prev) => ({ ...prev, batchId: flatBatches[0].id }));
+        }
+        if (cData.classes.length > 0 && !assignForm.classId) {
+          setAssignForm((prev) => ({ ...prev, classId: cData.classes[0].id }));
         }
       }
     } catch (err) {
@@ -183,84 +257,191 @@ export default function HealthTasksPage({
     loadData();
   }, [slug]);
 
-  const handleMetricChange = (type: string) => {
-    let defaultUnit = "steps";
-    let defaultOp = "GREATER_THAN_OR_EQUAL";
-    let defaultMin = "8000";
-    let defaultMax = "";
-    let defaultCritical: { id: string; type: "BELOW" | "ABOVE"; value: string; label: string }[] = [];
-
-    if (type === "HEART_RATE") {
-      defaultUnit = "bpm";
-      defaultOp = "LESS_THAN_OR_EQUAL";
-      defaultMin = "";
-      defaultMax = "75";
-      defaultCritical = [
-        { id: "c1", type: "BELOW", value: "40", label: "Critical Low (Bradycardia)" },
-        { id: "c2", type: "ABOVE", value: "120", label: "Critical High (Tachycardia)" },
-      ];
-    } else if (type === "BLOOD_PRESSURE_SYSTOLIC") {
-      defaultUnit = "mmHg";
-      defaultOp = "BETWEEN_INCLUSIVE";
-      defaultMin = "90";
-      defaultMax = "120";
-      defaultCritical = [
-        { id: "c1", type: "BELOW", value: "85", label: "Hypotension Alert" },
-        { id: "c2", type: "ABOVE", value: "140", label: "Hypertension Alert" },
-      ];
-    } else if (type === "SLEEP_DURATION_MINUTES") {
-      defaultUnit = "minutes";
-      defaultOp = "GREATER_THAN_OR_EQUAL";
-      defaultMin = "480";
-    } else if (type === "SPO2_PERCENTAGE") {
-      defaultUnit = "%";
-      defaultOp = "GREATER_THAN_OR_EQUAL";
-      defaultMin = "95";
-      defaultCritical = [
-        { id: "c1", type: "BELOW", value: "90", label: "Hypoxia Critical Alert" },
-      ];
+  // Metric options management
+  const handleAddMetricOption = () => {
+    // Find first unused metric type
+    const usedTypes = new Set(taskForm.metrics.map((m) => m.metricType));
+    const nextAvail = ALL_METRIC_TYPES.find((t) => !usedTypes.has(t.value));
+    if (!nextAvail) {
+      toast.error("All available metric types have already been configured for this task.");
+      return;
     }
 
     setTaskForm((prev) => ({
       ...prev,
-      metricType: type,
-      unit: defaultUnit,
-      operator: defaultOp,
-      minValue: defaultMin,
-      maxValue: defaultMax,
-      criticalZones: defaultCritical,
+      metrics: [...prev.metrics, createInitialMetric(nextAvail.value)],
+    }));
+  };
+
+  const handleRemoveMetricOption = (metricId: string) => {
+    if (taskForm.metrics.length <= 1) {
+      toast.error("A task must have at least one benchmark metric.");
+      return;
+    }
+    setTaskForm((prev) => ({
+      ...prev,
+      metrics: prev.metrics.filter((m) => m.id !== metricId),
+    }));
+  };
+
+  const handleMetricTypeChange = (metricId: string, newType: string) => {
+    // Verify no duplicate metric type
+    const otherUsedTypes = new Set(
+      taskForm.metrics.filter((m) => m.id !== metricId).map((m) => m.metricType)
+    );
+    if (otherUsedTypes.has(newType)) {
+      toast.error(`The metric type '${newType}' is already added to this task. Duplicate metrics are not allowed.`);
+      return;
+    }
+
+    const conf = DEFAULT_METRIC_CONFIGS[newType] || {
+      unit: "units",
+      operator: "GREATER_THAN_OR_EQUAL",
+      minValue: "100",
+      maxValue: "",
+      criticalZones: [],
+    };
+
+    setTaskForm((prev) => ({
+      ...prev,
+      metrics: prev.metrics.map((m) => {
+        if (m.id !== metricId) return m;
+        return {
+          ...m,
+          metricType: newType,
+          unit: conf.unit,
+          operator: conf.operator,
+          minValue: conf.minValue,
+          maxValue: conf.maxValue,
+          targetValue: conf.minValue || conf.maxValue || "",
+          criticalZones: [...conf.criticalZones.map((z) => ({ ...z, id: Math.random().toString(36).substring(2, 9) }))],
+        };
+      }),
+    }));
+  };
+
+  const handleUpdateMetricField = (
+    metricId: string,
+    field: keyof MetricOptionForm,
+    value: any
+  ) => {
+    setTaskForm((prev) => ({
+      ...prev,
+      metrics: prev.metrics.map((m) =>
+        m.id === metricId ? { ...m, [field]: value } : m
+      ),
+    }));
+  };
+
+  const handleAddCriticalZone = (metricId: string) => {
+    setTaskForm((prev) => ({
+      ...prev,
+      metrics: prev.metrics.map((m) => {
+        if (m.id !== metricId) return m;
+        return {
+          ...m,
+          criticalZones: [
+            ...m.criticalZones,
+            {
+              id: Math.random().toString(36).substring(2, 9),
+              type: "ABOVE",
+              value: "",
+              label: "",
+            },
+          ],
+        };
+      }),
+    }));
+  };
+
+  const handleRemoveCriticalZone = (metricId: string, zoneId: string) => {
+    setTaskForm((prev) => ({
+      ...prev,
+      metrics: prev.metrics.map((m) => {
+        if (m.id !== metricId) return m;
+        return {
+          ...m,
+          criticalZones: m.criticalZones.filter((z) => z.id !== zoneId),
+        };
+      }),
+    }));
+  };
+
+  const handleUpdateCriticalZone = (
+    metricId: string,
+    zoneId: string,
+    field: "type" | "value" | "label",
+    value: string
+  ) => {
+    setTaskForm((prev) => ({
+      ...prev,
+      metrics: prev.metrics.map((m) => {
+        if (m.id !== metricId) return m;
+        return {
+          ...m,
+          criticalZones: m.criticalZones.map((z) =>
+            z.id === zoneId ? { ...z, [field]: value } : z
+          ),
+        };
+      }),
     }));
   };
 
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
     setModalError("");
+
+    if (!taskForm.title.trim()) {
+      setModalError("Please provide a task title.");
+      return;
+    }
+
+    if (taskForm.metrics.length === 0) {
+      setModalError("At least one benchmark metric must be configured for the task.");
+      return;
+    }
+
+    // Verify duplicate types
+    const seen = new Set<string>();
+    for (const m of taskForm.metrics) {
+      if (seen.has(m.metricType)) {
+        setModalError(`Duplicate metric type '${m.metricType}' found. Each metric type can only be added once per task.`);
+        return;
+      }
+      seen.add(m.metricType);
+    }
+
     try {
-      const isRange =
-        taskForm.operator === "BETWEEN_INCLUSIVE" ||
-        taskForm.operator === "BETWEEN_EXCLUSIVE";
-      const singleVal = taskForm.minValue || taskForm.targetValue || taskForm.maxValue;
+      const formattedMetrics = taskForm.metrics.map((m) => {
+        const isRange =
+          m.operator === "BETWEEN_INCLUSIVE" || m.operator === "BETWEEN_EXCLUSIVE";
+        const singleVal = m.minValue || m.targetValue || m.maxValue;
+
+        return {
+          metricType: m.metricType,
+          unit: m.unit,
+          operator: m.operator,
+          minValue: isRange
+            ? m.minValue
+            : m.operator === "GREATER_THAN_OR_EQUAL" || m.operator === "EXACT_MATCH"
+            ? singleVal
+            : null,
+          maxValue: isRange
+            ? m.maxValue
+            : m.operator === "LESS_THAN_OR_EQUAL"
+            ? singleVal
+            : null,
+          targetValue: singleVal,
+          clinicalNotes: m.clinicalNotes,
+          criticalZones: m.criticalZones,
+        };
+      });
 
       const payload = {
         action: "CREATE_TASK",
-        title: taskForm.title,
-        description: taskForm.description,
-        metricType: taskForm.metricType,
-        unit: taskForm.unit,
-        operator: taskForm.operator,
-        minValue: isRange
-          ? taskForm.minValue
-          : taskForm.operator === "GREATER_THAN_OR_EQUAL" || taskForm.operator === "EXACT_MATCH"
-          ? singleVal
-          : null,
-        maxValue: isRange
-          ? taskForm.maxValue
-          : taskForm.operator === "LESS_THAN_OR_EQUAL"
-          ? singleVal
-          : null,
-        targetValue: singleVal,
-        clinicalNotes: taskForm.clinicalNotes,
-        criticalZones: taskForm.criticalZones,
+        title: taskForm.title.trim(),
+        description: taskForm.description?.trim() || null,
+        metrics: formattedMetrics,
       };
 
       const res = await fetch(`/api/${slug}/tasks`, {
@@ -271,8 +452,15 @@ export default function HealthTasksPage({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      toast.success("Health Task & Benchmark Version initialized!");
+      toast.success(
+        `Health Task with ${formattedMetrics.length} benchmark metric${formattedMetrics.length > 1 ? "s" : ""} initialized!`
+      );
       setIsTaskModalOpen(false);
+      setTaskForm({
+        title: "",
+        description: "",
+        metrics: [createInitialMetric("STEPS")],
+      });
       loadData();
     } catch (err: any) {
       setModalError(err.message);
@@ -283,26 +471,47 @@ export default function HealthTasksPage({
   const handleAssignTask = async (e: React.FormEvent) => {
     e.preventDefault();
     setModalError("");
+
+    if (assignForm.scope === "PROGRAM" && !assignForm.classId) {
+      setModalError("Please select a target program.");
+      return;
+    }
+    if (assignForm.scope === "BATCH" && !assignForm.batchId) {
+      setModalError("Please select a target batch.");
+      return;
+    }
+
     try {
       const [sh, sm] = assignForm.startTime.split(":").map(Number);
       const [eh, em] = assignForm.endTime.split(":").map(Number);
       let durationMins = eh * 60 + em - (sh * 60 + sm);
       if (durationMins <= 0) durationMins += 24 * 60;
 
+      const payload = {
+        action: "ASSIGN_TASK",
+        taskId: selectedTaskId,
+        batchId: assignForm.scope === "BATCH" ? assignForm.batchId : null,
+        classId: assignForm.scope === "PROGRAM" ? assignForm.classId : null,
+        startDate: assignForm.startDate,
+        endDate: assignForm.endDate,
+        startTime: assignForm.startTime,
+        endTime: assignForm.endTime,
+        durationMinutes: durationMins,
+      };
+
       const res = await fetch(`/api/${slug}/tasks`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "ASSIGN_TASK",
-          taskId: selectedTaskId,
-          ...assignForm,
-          durationMinutes: durationMins,
-        }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      toast.success("Task assigned and timetable schedule generated!");
+      toast.success(
+        assignForm.scope === "PROGRAM"
+          ? "Task assigned across entire program timetable schedule!"
+          : "Task assigned to cohort batch and timetable schedule generated!"
+      );
       setIsAssignModalOpen(false);
       loadData();
     } catch (err: any) {
@@ -315,7 +524,7 @@ export default function HealthTasksPage({
     <div className="flex-1 flex flex-col">
       <TenantHeader
         title="Health Monitoring Tasks & Benchmarks"
-        subtitle="Configure physical activity and physiological benchmark thresholds with version tracking"
+        subtitle="Configure physical activity and physiological benchmark thresholds with multi-metric support"
         tenantSlug={slug}
       />
 
@@ -327,12 +536,20 @@ export default function HealthTasksPage({
               Health Metric Catalog
             </h2>
             <p className="text-xs text-slate-500">
-              Tasks evaluated daily by the automated benchmark worker
+              Tasks evaluated daily by the automated benchmark worker across assigned programs and batches
             </p>
           </div>
           <Button
-            onClick={() => setIsTaskModalOpen(true)}
-            className="gap-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-xs"
+            onClick={() => {
+              setModalError("");
+              setTaskForm({
+                title: "",
+                description: "",
+                metrics: [createInitialMetric("STEPS")],
+              });
+              setIsTaskModalOpen(true);
+            }}
+            className="gap-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-xs shadow-sm"
           >
             <Plus className="w-4 h-4" />
             <span>Create Health Task</span>
@@ -352,26 +569,26 @@ export default function HealthTasksPage({
               return (
                 <div
                   key={task.id}
-                  className="glass-card rounded-2xl p-6 border-slate-200 dark:border-slate-800 flex flex-col justify-between"
+                  className="glass-card rounded-2xl p-6 border-slate-200 dark:border-slate-800 flex flex-col justify-between hover:border-orange-500/40 transition-all"
                 >
                   <div>
                     {/* Header */}
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
                             {task.title}
                           </h3>
-                          <Badge variant="default" className="text-[10px] uppercase font-bold">
+                          <Badge variant="default" className="text-[10px] uppercase font-bold bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20">
                             {task.metricType}
                           </Badge>
                         </div>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                          {task.description || "Continuous daily telemetry tracking"}
+                          {task.description || "Continuous telemetry benchmark tracking"}
                         </p>
                       </div>
 
-                      <div className="text-right">
+                      <div className="text-right shrink-0">
                         <span className="text-[11px] font-mono text-orange-500 dark:text-orange-400 font-semibold block">
                           v{latestBm?.versionNumber || 1}
                         </span>
@@ -430,25 +647,38 @@ export default function HealthTasksPage({
                       </div>
                     )}
 
-                    {/* Active Assignments */}
+                    {/* Active Assignments: Programs & Batches */}
                     <div className="mb-4">
                       <span className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400 block mb-1.5">
-                        Assigned Cohorts ({task.assignments.length}):
+                        Assigned Cohorts & Programs ({task.assignments.length}):
                       </span>
                       {task.assignments.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5">
                           {task.assignments.map((as) => (
                             <span
                               key={as.id}
-                              className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700"
+                              className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5"
                             >
-                              {as.batch?.name || "Cohort"}
+                              {as.class ? (
+                                <>
+                                  <GraduationCap className="w-3.5 h-3.5 text-orange-500" />
+                                  <span>Program: {as.class.name}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Layers className="w-3.5 h-3.5 text-slate-500" />
+                                  <span>
+                                    {as.batch?.class?.name ? `${as.batch.class.name} → ` : ""}
+                                    {as.batch?.name || "Cohort"}
+                                  </span>
+                                </>
+                              )}
                             </span>
                           ))}
                         </div>
                       ) : (
                         <span className="text-xs text-slate-400 italic">
-                          Not currently assigned to any batch
+                          Not currently assigned to any program or batch
                         </span>
                       )}
                     </div>
@@ -464,9 +694,9 @@ export default function HealthTasksPage({
                         setSelectedTaskId(task.id);
                         setIsAssignModalOpen(true);
                       }}
-                      className="bg-orange-500 hover:bg-orange-500 text-white font-bold text-xs"
+                      className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-sm"
                     >
-                      Assign to Batch
+                      Assign Task
                     </Button>
                   </div>
                 </div>
@@ -474,337 +704,408 @@ export default function HealthTasksPage({
             })
           ) : (
             <div className="lg:col-span-2 glass-card rounded-2xl p-12 text-center text-xs text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800">
-              No tasks created yet.
+              No tasks created yet. Click &quot;Create Health Task&quot; above to configure your first activity benchmark.
             </div>
           )}
         </div>
       </main>
 
-      {/* Modal: Create Task */}
+      {/* Modal 1: Create Health Task (Multi-Metric Support, Width 4XL) */}
       <Modal
         isOpen={isTaskModalOpen}
         onClose={() => setIsTaskModalOpen(false)}
-        title="Create Health Task & Benchmark"
-        description="Select a supported physiological metric and configure the benchmark evaluation rule"
-        maxWidth="lg"
+        title="Create Health Task & Benchmarks"
+        description="Configure task details and add one or more physiological benchmark metrics with dedicated alert zones"
+        maxWidth="4xl"
       >
-        <form onSubmit={handleCreateTask} className="space-y-4">
+        <form onSubmit={handleCreateTask} className="space-y-5">
           {modalError && (
             <div className="p-3 rounded-lg bg-rose-50 text-rose-700 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" />
+              <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{modalError}</span>
             </div>
           )}
           {modalSuccess && (
             <div className="p-3 rounded-lg bg-emerald-50 text-emerald-700 text-xs flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" />
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{modalSuccess}</span>
             </div>
           )}
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-              Task Title *
-            </label>
-            <Input
-              required
-              placeholder="e.g. Daily Step Target, Resting Pulse Check"
-              value={taskForm.title}
-              onChange={(e) =>
-                setTaskForm((prev) => ({ ...prev, title: e.target.value }))
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
+          {/* Top: Title & Description */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Metric Type *
-              </label>
-              <select
-                value={taskForm.metricType}
-                onChange={(e) => handleMetricChange(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white dark:bg-slate-900 text-sm font-medium"
-              >
-                <option value="STEPS">Steps (Daily ambulatory count)</option>
-                <option value="HEART_RATE">Heart Rate (Pulse bpm)</option>
-                <option value="BLOOD_PRESSURE_SYSTOLIC">Blood Pressure (Systolic mmHg)</option>
-                <option value="SLEEP_DURATION_MINUTES">Sleep Duration (Minutes)</option>
-                <option value="SPO2_PERCENTAGE">Blood Oxygen (SpO2 %)</option>
-                <option value="CALORIES_BURNED">Calories Burned (kcal)</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Measurement Unit *
+                Task Title *
               </label>
               <Input
                 required
-                value={taskForm.unit}
+                placeholder="e.g. Walking, Sprint Conditioning, Morning Vital Check"
+                value={taskForm.title}
                 onChange={(e) =>
-                  setTaskForm((prev) => ({ ...prev, unit: e.target.value }))
+                  setTaskForm((prev) => ({ ...prev, title: e.target.value }))
                 }
               />
             </div>
-          </div>
-
-          {/* Benchmark Operator & Thresholds */}
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-3">
-            <h4 className="text-xs font-bold uppercase text-orange-700 dark:text-orange-400">
-              Benchmark Rule Configuration
-            </h4>
 
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Comparison Operator *
-              </label>
-              <select
-                value={taskForm.operator}
-                onChange={(e) =>
-                  setTaskForm((prev) => ({ ...prev, operator: e.target.value }))
-                }
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white dark:bg-slate-900 text-sm font-medium"
-              >
-                <option value="GREATER_THAN_OR_EQUAL">&gt;= (Greater than or equal to threshold)</option>
-                <option value="LESS_THAN_OR_EQUAL">&lt;= (Less than or equal to threshold)</option>
-                <option value="BETWEEN_INCLUSIVE">BETWEEN (Inclusive range [min, max])</option>
-                <option value="EXACT_MATCH">EXACT MATCH (= Target)</option>
-              </select>
-            </div>
-
-            {/* Dynamic Value Entry Based on Operator Selection */}
-            {taskForm.operator === "BETWEEN_INCLUSIVE" ? (
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Min Value (Lower Bound) *
-                  </label>
-                  <Input
-                    type="number"
-                    required
-                    placeholder="e.g. 90"
-                    value={taskForm.minValue}
-                    onChange={(e) =>
-                      setTaskForm((prev) => ({ ...prev, minValue: e.target.value }))
-                    }
-                  />
-                  <span className="text-[10px] text-slate-400 mt-1 block">
-                    Range lower threshold ({taskForm.unit})
-                  </span>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Max Value (Upper Bound) *
-                  </label>
-                  <Input
-                    type="number"
-                    required
-                    placeholder="e.g. 120"
-                    value={taskForm.maxValue}
-                    onChange={(e) =>
-                      setTaskForm((prev) => ({ ...prev, maxValue: e.target.value }))
-                    }
-                  />
-                  <span className="text-[10px] text-slate-400 mt-1 block">
-                    Range upper threshold ({taskForm.unit})
-                  </span>
-                </div>
-              </div>
-            ) : taskForm.operator === "EXACT_MATCH" ? (
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Target Value (= Exact Match) *
-                </label>
-                <Input
-                  type="number"
-                  required
-                  placeholder="e.g. 8000"
-                  value={taskForm.minValue}
-                  onChange={(e) =>
-                    setTaskForm((prev) => ({
-                      ...prev,
-                      minValue: e.target.value,
-                      targetValue: e.target.value,
-                    }))
-                  }
-                />
-                <span className="text-[10px] text-orange-400 font-medium mt-1 block">
-                  Single value mode: Recorded telemetry must match this exact target ({taskForm.unit}).
-                </span>
-              </div>
-            ) : taskForm.operator === "GREATER_THAN_OR_EQUAL" ? (
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Minimum Threshold Value (&gt;=) *
-                </label>
-                <Input
-                  type="number"
-                  required
-                  placeholder="e.g. 8000"
-                  value={taskForm.minValue}
-                  onChange={(e) =>
-                    setTaskForm((prev) => ({
-                      ...prev,
-                      minValue: e.target.value,
-                      targetValue: e.target.value,
-                    }))
-                  }
-                />
-                <span className="text-[10px] text-orange-400 font-medium mt-1 block">
-                  Single value mode: Recorded telemetry must reach or exceed this threshold ({taskForm.unit}).
-                </span>
-              </div>
-            ) : (
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Maximum Threshold Value (&lt;=) *
-                </label>
-                <Input
-                  type="number"
-                  required
-                  placeholder="e.g. 75"
-                  value={taskForm.maxValue || taskForm.minValue}
-                  onChange={(e) =>
-                    setTaskForm((prev) => ({
-                      ...prev,
-                      maxValue: e.target.value,
-                      minValue: e.target.value,
-                      targetValue: e.target.value,
-                    }))
-                  }
-                />
-                <span className="text-[10px] text-orange-400 font-medium mt-1 block">
-                  Single value mode: Recorded telemetry must remain at or below this ceiling ({taskForm.unit}).
-                </span>
-              </div>
-            )}
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Clinical / Coaching Guidelines
+                Description / Purpose (Optional)
               </label>
               <Input
-                placeholder="e.g. Endorsed by youth health board"
-                value={taskForm.clinicalNotes}
+                placeholder="e.g. Daily ambulatory cardio target with heart rate monitoring"
+                value={taskForm.description}
                 onChange={(e) =>
-                  setTaskForm((prev) => ({
-                    ...prev,
-                    clinicalNotes: e.target.value,
-                  }))
+                  setTaskForm((prev) => ({ ...prev, description: e.target.value }))
                 }
               />
             </div>
           </div>
 
-          {/* Optional Critical Alert Safety Zones (strictly ABOVE or BELOW) */}
-          <div className="p-4 rounded-xl bg-rose-50/70 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <AlertOctagon className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
-                <div>
-                  <h4 className="text-xs font-bold uppercase text-rose-800 dark:text-rose-300">
-                    Optional Critical Safety Alert Zones
-                  </h4>
-                  <span className="text-[10px] text-rose-600/80 dark:text-rose-400/80">
-                    Triggers smartband vibration & incident logging when student telemetry reaches extremes
-                  </span>
-                </div>
-              </div>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={handleAddCriticalZone}
-                className="h-7 text-xs border-rose-300 text-rose-700 hover:bg-rose-100 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-900/30 flex items-center gap-1 shrink-0"
-              >
-                <Plus className="w-3.5 h-3.5" /> Add Critical Zone
-              </Button>
+          {/* Metric Options Section Header */}
+          <div className="flex items-center justify-between pt-1">
+            <div>
+              <h4 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                <Target className="w-4 h-4 text-orange-500" />
+                <span>Configured Benchmark Metrics ({taskForm.metrics.length})</span>
+              </h4>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                A task can measure multiple metrics simultaneously (e.g. Steps + Heart Rate during walking)
+              </p>
             </div>
 
-            {taskForm.criticalZones && taskForm.criticalZones.length > 0 ? (
-              <div className="space-y-2 mt-2">
-                {taskForm.criticalZones.map((zone) => (
-                  <div
-                    key={zone.id}
-                    className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-900/50 flex flex-col md:flex-row items-stretch md:items-center gap-2"
-                  >
-                    {/* Operator selector: Strictly ABOVE or BELOW */}
-                    <div className="w-full md:w-44 flex-shrink-0">
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
-                        Alert Condition
-                      </label>
-                      <select
-                        value={zone.type}
-                        onChange={(e) =>
-                          handleUpdateCriticalZone(zone.id, "type", e.target.value as "BELOW" | "ABOVE")
-                        }
-                        className="w-full h-8 px-2 text-xs font-bold rounded border border-rose-300 dark:border-rose-800 bg-rose-50/50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-200"
-                      >
-                        <option value="BELOW">CRITICAL BELOW (&lt;)</option>
-                        <option value="ABOVE">CRITICAL ABOVE (&gt;)</option>
-                      </select>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={handleAddMetricOption}
+              disabled={taskForm.metrics.length >= ALL_METRIC_TYPES.length}
+              className="gap-1.5 text-xs font-bold text-orange-600 dark:text-orange-400 border-orange-300 dark:border-orange-800 hover:bg-orange-50 dark:hover:bg-orange-950/40"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add Metric Option</span>
+            </Button>
+          </div>
+
+          {/* Metric Options List */}
+          <div className="space-y-4 max-h-[55vh] overflow-y-auto pr-1">
+            {taskForm.metrics.map((metric, idx) => {
+              const otherSelectedTypes = new Set(
+                taskForm.metrics.filter((m) => m.id !== metric.id).map((m) => m.metricType)
+              );
+
+              return (
+                <div
+                  key={metric.id}
+                  className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/70 shadow-sm space-y-3.5"
+                >
+                  {/* Metric Card Header */}
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-orange-500/15 text-orange-600 dark:text-orange-400 text-xs font-bold flex items-center justify-center">
+                        #{idx + 1}
+                      </span>
+                      <span className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">
+                        Metric Option #{idx + 1}: {metric.metricType.replace(/_/g, " ")}
+                      </span>
                     </div>
 
-                    {/* Numeric Value Input */}
-                    <div className="w-full md:w-36 flex-shrink-0">
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
-                        Threshold ({taskForm.unit}) *
-                      </label>
-                      <div className="flex items-center gap-1.5">
-                        <Input
-                          type="number"
-                          placeholder="Threshold"
-                          value={zone.value}
-                          onChange={(e) =>
-                            handleUpdateCriticalZone(zone.id, "value", e.target.value)
-                          }
-                          className="h-8 text-xs font-semibold"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    {/* Description / Label */}
-                    <div className="flex-1">
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
-                        Safety Label (Optional)
-                      </label>
-                      <Input
-                        placeholder="e.g. Critical High Pulse Alert"
-                        value={zone.label}
-                        onChange={(e) =>
-                          handleUpdateCriticalZone(zone.id, "label", e.target.value)
-                        }
-                        className="h-8 text-xs"
-                      />
-                    </div>
-
-                    {/* Delete action */}
-                    <div className="self-end md:self-center pt-2 md:pt-4">
+                    {taskForm.metrics.length > 1 && (
                       <Button
                         type="button"
                         size="sm"
                         variant="ghost"
-                        onClick={() => handleRemoveCriticalZone(zone.id)}
-                        className="h-8 w-8 p-0 text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/40"
-                        title="Remove critical zone"
+                        onClick={() => handleRemoveMetricOption(metric.id)}
+                        className="h-7 text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 gap-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove Metric</span>
                       </Button>
+                    )}
+                  </div>
+
+                  {/* Metric Type & Unit Selection */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Metric Type *
+                      </label>
+                      <select
+                        value={metric.metricType}
+                        onChange={(e) => handleMetricTypeChange(metric.id, e.target.value)}
+                        className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold"
+                      >
+                        {ALL_METRIC_TYPES.map((t) => (
+                          <option
+                            key={t.value}
+                            value={t.value}
+                            disabled={otherSelectedTypes.has(t.value)}
+                          >
+                            {t.label} {otherSelectedTypes.has(t.value) ? "(Already Added)" : ""}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Measurement Unit *
+                      </label>
+                      <Input
+                        required
+                        value={metric.unit}
+                        onChange={(e) =>
+                          handleUpdateMetricField(metric.id, "unit", e.target.value)
+                        }
+                        className="h-9 text-xs font-medium"
+                      />
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-2.5 border border-dashed border-rose-200 dark:border-rose-900/40 rounded-lg text-xs text-rose-600/80 dark:text-rose-400/80">
-                No critical safety alert zones configured for this task.
-              </div>
-            )}
+
+                  {/* Benchmark Operator & Threshold Values */}
+                  <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Comparison Operator *
+                      </label>
+                      <select
+                        value={metric.operator}
+                        onChange={(e) =>
+                          handleUpdateMetricField(metric.id, "operator", e.target.value)
+                        }
+                        className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold"
+                      >
+                        <option value="GREATER_THAN_OR_EQUAL">&gt;= (Greater than or equal to threshold)</option>
+                        <option value="LESS_THAN_OR_EQUAL">&lt;= (Less than or equal to threshold)</option>
+                        <option value="BETWEEN_INCLUSIVE">BETWEEN (Inclusive range [min, max])</option>
+                        <option value="EXACT_MATCH">EXACT MATCH (= Target)</option>
+                      </select>
+                    </div>
+
+                    {/* Dynamic Inputs Based on Operator */}
+                    {metric.operator === "BETWEEN_INCLUSIVE" ? (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                            Min Value (Lower Bound) *
+                          </label>
+                          <Input
+                            type="number"
+                            required
+                            placeholder="e.g. 90"
+                            value={metric.minValue}
+                            onChange={(e) =>
+                              handleUpdateMetricField(metric.id, "minValue", e.target.value)
+                            }
+                            className="h-8 text-xs font-semibold"
+                          />
+                          <span className="text-[10px] text-slate-400 mt-0.5 block">
+                            Lower bound ({metric.unit})
+                          </span>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                            Max Value (Upper Bound) *
+                          </label>
+                          <Input
+                            type="number"
+                            required
+                            placeholder="e.g. 120"
+                            value={metric.maxValue}
+                            onChange={(e) =>
+                              handleUpdateMetricField(metric.id, "maxValue", e.target.value)
+                            }
+                            className="h-8 text-xs font-semibold"
+                          />
+                          <span className="text-[10px] text-slate-400 mt-0.5 block">
+                            Upper bound ({metric.unit})
+                          </span>
+                        </div>
+                      </div>
+                    ) : metric.operator === "EXACT_MATCH" ? (
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                          Target Value (= Exact Match) *
+                        </label>
+                        <Input
+                          type="number"
+                          required
+                          placeholder="e.g. 8000"
+                          value={metric.minValue}
+                          onChange={(e) => {
+                            handleUpdateMetricField(metric.id, "minValue", e.target.value);
+                            handleUpdateMetricField(metric.id, "targetValue", e.target.value);
+                          }}
+                          className="h-8 text-xs font-semibold"
+                        />
+                        <span className="text-[10px] text-orange-400 font-medium mt-0.5 block">
+                          Single value: Telemetry must equal this exact target ({metric.unit}).
+                        </span>
+                      </div>
+                    ) : metric.operator === "GREATER_THAN_OR_EQUAL" ? (
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                          Minimum Threshold Value (&gt;=) *
+                        </label>
+                        <Input
+                          type="number"
+                          required
+                          placeholder="e.g. 8000"
+                          value={metric.minValue}
+                          onChange={(e) => {
+                            handleUpdateMetricField(metric.id, "minValue", e.target.value);
+                            handleUpdateMetricField(metric.id, "targetValue", e.target.value);
+                          }}
+                          className="h-8 text-xs font-semibold"
+                        />
+                        <span className="text-[10px] text-orange-400 font-medium mt-0.5 block">
+                          Single value: Telemetry must meet or exceed this target ({metric.unit}).
+                        </span>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                          Maximum Threshold Value (&lt;=) *
+                        </label>
+                        <Input
+                          type="number"
+                          required
+                          placeholder="e.g. 75"
+                          value={metric.maxValue || metric.minValue}
+                          onChange={(e) => {
+                            handleUpdateMetricField(metric.id, "maxValue", e.target.value);
+                            handleUpdateMetricField(metric.id, "minValue", e.target.value);
+                            handleUpdateMetricField(metric.id, "targetValue", e.target.value);
+                          }}
+                          className="h-8 text-xs font-semibold"
+                        />
+                        <span className="text-[10px] text-orange-400 font-medium mt-0.5 block">
+                          Single value: Telemetry must remain at or below this ceiling ({metric.unit}).
+                        </span>
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                        Clinical / Coaching Guidelines
+                      </label>
+                      <Input
+                        placeholder="e.g. Endorsed by youth health board for active aerobic session"
+                        value={metric.clinicalNotes}
+                        onChange={(e) =>
+                          handleUpdateMetricField(metric.id, "clinicalNotes", e.target.value)
+                        }
+                        className="h-8 text-xs"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Optional Critical Alert Safety Zones */}
+                  <div className="p-3 rounded-lg bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <AlertOctagon className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />
+                        <span className="text-[11px] font-bold uppercase text-rose-800 dark:text-rose-300">
+                          Critical Safety Alert Zones for {metric.metricType}
+                        </span>
+                      </div>
+
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleAddCriticalZone(metric.id)}
+                        className="h-6 text-[10px] font-bold border-rose-300 text-rose-700 hover:bg-rose-100 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-900/40 flex items-center gap-1"
+                      >
+                        <Plus className="w-3 h-3" /> Add Critical Zone
+                      </Button>
+                    </div>
+
+                    {metric.criticalZones && metric.criticalZones.length > 0 ? (
+                      <div className="space-y-2">
+                        {metric.criticalZones.map((zone) => (
+                          <div
+                            key={zone.id}
+                            className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-900/50 flex flex-col sm:flex-row items-stretch sm:items-center gap-2"
+                          >
+                            <div className="w-full sm:w-40 shrink-0">
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">
+                                Condition
+                              </label>
+                              <select
+                                value={zone.type}
+                                onChange={(e) =>
+                                  handleUpdateCriticalZone(
+                                    metric.id,
+                                    zone.id,
+                                    "type",
+                                    e.target.value as "BELOW" | "ABOVE"
+                                  )
+                                }
+                                className="w-full h-7 px-2 text-xs font-bold rounded border border-rose-300 dark:border-rose-800 bg-rose-50/50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-200"
+                              >
+                                <option value="BELOW">CRITICAL BELOW (&lt;)</option>
+                                <option value="ABOVE">CRITICAL ABOVE (&gt;)</option>
+                              </select>
+                            </div>
+
+                            <div className="w-full sm:w-32 shrink-0">
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">
+                                Threshold ({metric.unit}) *
+                              </label>
+                              <Input
+                                type="number"
+                                placeholder="Value"
+                                value={zone.value}
+                                onChange={(e) =>
+                                  handleUpdateCriticalZone(metric.id, zone.id, "value", e.target.value)
+                                }
+                                className="h-7 text-xs font-semibold"
+                                required
+                              />
+                            </div>
+
+                            <div className="flex-1">
+                              <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">
+                                Label
+                              </label>
+                              <Input
+                                placeholder="e.g. Dangerously High Alert"
+                                value={zone.label}
+                                onChange={(e) =>
+                                  handleUpdateCriticalZone(metric.id, zone.id, "label", e.target.value)
+                                }
+                                className="h-7 text-xs"
+                              />
+                            </div>
+
+                            <div className="self-end sm:self-center pt-2 sm:pt-4">
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleRemoveCriticalZone(metric.id, zone.id)}
+                                className="h-7 w-7 p-0 text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/40"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-2 border border-dashed border-rose-200 dark:border-rose-900/40 rounded text-[11px] text-rose-600/80 dark:text-rose-400/80">
+                        No critical safety alert zones configured for this metric.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
-          <div className="flex justify-end gap-3 pt-3">
+          <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
             <Button
               type="button"
               variant="outline"
@@ -816,52 +1117,119 @@ export default function HealthTasksPage({
               type="submit"
               className="bg-orange-600 hover:bg-orange-700 text-white font-semibold"
             >
-              Save Task & Benchmark
+              Save Health Task & Benchmarks
             </Button>
           </div>
         </form>
       </Modal>
 
-      {/* Modal: Assign Task to Batch */}
+      {/* Modal 2: Assign Task to Program or Batch */}
       <Modal
         isOpen={isAssignModalOpen}
         onClose={() => setIsAssignModalOpen(false)}
-        title="Assign Health Task to Cohort Batch"
+        title="Assign Health Task to Program or Batch"
         description="Creates scheduled evaluation timetable entries across effective dates"
       >
         <form onSubmit={handleAssignTask} className="space-y-4">
           {modalError && (
             <div className="p-3 rounded-lg bg-rose-50 text-rose-700 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" />
+              <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{modalError}</span>
             </div>
           )}
           {modalSuccess && (
             <div className="p-3 rounded-lg bg-emerald-50 text-emerald-700 text-xs flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" />
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{modalSuccess}</span>
             </div>
           )}
 
+          {/* Scope Selector: Whole Program vs Specific Batch */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-              Target Batch *
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              Assignment Scope *
             </label>
-            <select
-              required
-              value={assignForm.batchId}
-              onChange={(e) =>
-                setAssignForm((prev) => ({ ...prev, batchId: e.target.value }))
-              }
-              className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white dark:bg-slate-900 text-sm font-medium"
-            >
-              {batches.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.className} → {b.name}
-                </option>
-              ))}
-            </select>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setAssignForm((prev) => ({ ...prev, scope: "PROGRAM" }))}
+                className={`p-3 rounded-xl border text-left flex items-start gap-2.5 transition-all ${
+                  assignForm.scope === "PROGRAM"
+                    ? "border-orange-500 bg-orange-50/50 dark:bg-orange-950/30 text-orange-900 dark:text-orange-200 font-bold"
+                    : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300"
+                }`}
+              >
+                <GraduationCap className={`w-4 h-4 mt-0.5 shrink-0 ${assignForm.scope === "PROGRAM" ? "text-orange-600" : "text-slate-400"}`} />
+                <div>
+                  <span className="text-xs font-extrabold block">Entire Program</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">
+                    Assigns task to all batches within the selected program
+                  </span>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setAssignForm((prev) => ({ ...prev, scope: "BATCH" }))}
+                className={`p-3 rounded-xl border text-left flex items-start gap-2.5 transition-all ${
+                  assignForm.scope === "BATCH"
+                    ? "border-orange-500 bg-orange-50/50 dark:bg-orange-950/30 text-orange-900 dark:text-orange-200 font-bold"
+                    : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300"
+                }`}
+              >
+                <Layers className={`w-4 h-4 mt-0.5 shrink-0 ${assignForm.scope === "BATCH" ? "text-orange-600" : "text-slate-400"}`} />
+                <div>
+                  <span className="text-xs font-extrabold block">Specific Batch</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">
+                    Assigns task to one dedicated cohort batch
+                  </span>
+                </div>
+              </button>
+            </div>
           </div>
+
+          {/* Conditional Target Selector */}
+          {assignForm.scope === "PROGRAM" ? (
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Select Target Program *
+              </label>
+              <select
+                required
+                value={assignForm.classId}
+                onChange={(e) =>
+                  setAssignForm((prev) => ({ ...prev, classId: e.target.value }))
+                }
+                className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white dark:bg-slate-900 text-sm font-medium"
+              >
+                {programs.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} ({p.academicPeriod})
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Select Target Cohort Batch *
+              </label>
+              <select
+                required
+                value={assignForm.batchId}
+                onChange={(e) =>
+                  setAssignForm((prev) => ({ ...prev, batchId: e.target.value }))
+                }
+                className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white dark:bg-slate-900 text-sm font-medium"
+              >
+                {batches.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.className} → {b.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-3">
             <div>

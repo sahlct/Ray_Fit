@@ -252,7 +252,7 @@ export function TenantSidebar({
               </div>
             )}
 
-            {/* Classes & Batches */}
+            {/* Programs & Batches */}
             {canSeeClasses && (
               <Link
                 href={`/${tenantSlug}/classes`}
@@ -272,7 +272,7 @@ export function TenantSidebar({
                       : "text-slate-500 dark:text-slate-400 group-hover:text-orange-500 dark:group-hover:text-slate-200"
                   )}
                 />
-                <span className="truncate">Classes & Batches</span>
+                <span className="truncate">Programs & Batches</span>
               </Link>
             )}
 
@@ -300,7 +300,7 @@ export function TenantSidebar({
               </Link>
             )}
 
-            {/* Class Timetables */}
+            {/* Program Timetables */}
             {canSeeTimetables && (
               <Link
                 href={`/${tenantSlug}/timetables`}
@@ -320,7 +320,7 @@ export function TenantSidebar({
                       : "text-slate-500 dark:text-slate-400 group-hover:text-orange-500 dark:group-hover:text-slate-200"
                   )}
                 />
-                <span className="truncate">Class Timetables</span>
+                <span className="truncate">Program Timetables</span>
               </Link>
             )}
 

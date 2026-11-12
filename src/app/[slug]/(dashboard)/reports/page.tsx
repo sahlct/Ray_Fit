@@ -123,101 +123,7 @@ export default function ReportsAnalyticsPage({
     window.print();
   };
 
-  // Seed sample evaluations fallback
-  const sampleData: EvaluationRecord[] = [
-    {
-      id: "ev-1",
-      evaluationDate: new Date().toISOString(),
-      status: "MET",
-      aggregatedValue: 9850,
-      thresholdSummary: "Achieved 9,850 steps (Target: >= 8,000 steps)",
-      student: {
-        fullName: "Alex Morgan",
-        email: "alex.morgan@greenvalley.edu",
-        enrollments: [{ batch: { name: "Batch A - Morning Athletics", class: { name: "Grade 10" } } }],
-      },
-      timetableEntry: {
-        assignment: {
-          task: { title: "Daily Active Step Goal", metricType: "STEPS", unit: "steps" },
-          batch: { name: "Batch A - Morning Athletics" },
-        },
-      },
-    },
-    {
-      id: "ev-2",
-      evaluationDate: new Date().toISOString(),
-      status: "NOT_MET",
-      aggregatedValue: 5420,
-      thresholdSummary: "Recorded 5,420 steps (Target: >= 8,000 steps)",
-      student: {
-        fullName: "Liam Chen",
-        email: "liam.chen@greenvalley.edu",
-        enrollments: [{ batch: { name: "Batch A - Morning Athletics", class: { name: "Grade 10" } } }],
-      },
-      timetableEntry: {
-        assignment: {
-          task: { title: "Daily Active Step Goal", metricType: "STEPS", unit: "steps" },
-          batch: { name: "Batch A - Morning Athletics" },
-        },
-      },
-    },
-    {
-      id: "ev-3",
-      evaluationDate: new Date().toISOString(),
-      status: "NO_DATA",
-      aggregatedValue: null,
-      thresholdSummary: "No wearable synchronization telemetry received for this evaluation window",
-      student: {
-        fullName: "Emma Watson",
-        email: "emma.watson@greenvalley.edu",
-        enrollments: [{ batch: { name: "Batch A - Morning Athletics", class: { name: "Grade 10" } } }],
-      },
-      timetableEntry: {
-        assignment: {
-          task: { title: "Daily Active Step Goal", metricType: "STEPS", unit: "steps" },
-          batch: { name: "Batch A - Morning Athletics" },
-        },
-      },
-    },
-    {
-      id: "ev-4",
-      evaluationDate: new Date(Date.now() - 86400000).toISOString(),
-      status: "MET",
-      aggregatedValue: 68,
-      thresholdSummary: "Achieved 68 bpm (Target: <= 75 bpm)",
-      student: {
-        fullName: "Alex Morgan",
-        email: "alex.morgan@greenvalley.edu",
-        enrollments: [{ batch: { name: "Batch A - Morning Athletics", class: { name: "Grade 10" } } }],
-      },
-      timetableEntry: {
-        assignment: {
-          task: { title: "Resting Pulse Check", metricType: "HEART_RATE", unit: "bpm" },
-          batch: { name: "Batch A - Morning Athletics" },
-        },
-      },
-    },
-    {
-      id: "ev-5",
-      evaluationDate: new Date(Date.now() - 86400000).toISOString(),
-      status: "MET",
-      aggregatedValue: 112,
-      thresholdSummary: "Achieved 112 mmHg (Target: Between 90 and 120 mmHg)",
-      student: {
-        fullName: "Liam Chen",
-        email: "liam.chen@greenvalley.edu",
-        enrollments: [{ batch: { name: "Batch A - Morning Athletics", class: { name: "Grade 10" } } }],
-      },
-      timetableEntry: {
-        assignment: {
-          task: { title: "Blood Pressure Range", metricType: "BLOOD_PRESSURE_SYSTOLIC", unit: "mmHg" },
-          batch: { name: "Batch A - Morning Athletics" },
-        },
-      },
-    },
-  ];
-
-  const displayList = evaluations.length > 0 ? evaluations : sampleData;
+  const displayList = evaluations;
 
   const filteredEvaluations = displayList.filter((ev) => {
     const matchesStatus = statusFilter === "ALL" || ev.status === statusFilter;
@@ -406,7 +312,13 @@ export default function ReportsAnalyticsPage({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                {filteredEvaluations.length > 0 ? (
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={8} className="py-12 text-center text-xs text-slate-400">
+                      Loading evaluation records...
+                    </td>
+                  </tr>
+                ) : filteredEvaluations.length > 0 ? (
                   filteredEvaluations.map((ev, index) => (
                     <tr
                       key={ev.id}

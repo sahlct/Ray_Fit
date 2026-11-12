@@ -119,7 +119,7 @@ export default function ClassesBatchesPage({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      setModalSuccess("Class created successfully!");
+      setModalSuccess("Program created successfully!");
       setTimeout(() => {
         setIsClassModalOpen(false);
         setModalSuccess("");
@@ -190,8 +190,8 @@ export default function ClassesBatchesPage({
   return (
     <div className="flex-1 flex flex-col">
       <TenantHeader
-        title="Classes, Batches & Student Enrollment"
-        subtitle="Manage academic cohorts, batch capacities, coach assignments, and enrollments"
+        title="Programs, Batches & Student Enrollment"
+        subtitle="Manage academic programs, batch capacities, coach assignments, and enrollments"
         tenantSlug={slug}
       />
 
@@ -203,7 +203,7 @@ export default function ClassesBatchesPage({
               Academic Hierarchy
             </h2>
             <p className="text-xs text-slate-500">
-              Classes hold Batches; Batches group students and receive Health Tasks
+              Programs hold Batches; Batches group students and receive Health Tasks
             </p>
           </div>
           <Button
@@ -211,15 +211,15 @@ export default function ClassesBatchesPage({
             className="gap-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-xs"
           >
             <Plus className="w-4 h-4" />
-            <span>New Academic Class</span>
+            <span>New Program</span>
           </Button>
         </div>
 
-        {/* Classes List */}
+        {/* Programs List */}
         <div className="space-y-8">
           {isLoading ? (
             <div className="glass-card rounded-2xl p-12 text-center text-xs text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
-              Loading classes and batch roster...
+              Loading programs and batch roster...
             </div>
           ) : classes.length > 0 ? (
             classes.map((c) => (
@@ -227,7 +227,7 @@ export default function ClassesBatchesPage({
                 key={c.id}
                 className="glass-card rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden"
               >
-                {/* Class Header */}
+                {/* Program Header */}
                 <div className="p-6 bg-slate-50 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-orange-500/15 border border-orange-500/30 text-orange-500 dark:text-orange-300 flex items-center justify-center font-bold">
@@ -248,7 +248,7 @@ export default function ClassesBatchesPage({
                       href={`/${slug}/classes/${c.id}`}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
                     >
-                      <span>View Class Details</span>
+                      <span>View Program Details</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
 
@@ -382,18 +382,18 @@ export default function ClassesBatchesPage({
             ))
           ) : (
             <div className="glass-card rounded-2xl p-12 text-center text-xs text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
-              No classes created yet. Click &quot;New Academic Class&quot; to begin.
+              No programs created yet. Click &quot;New Program&quot; to begin.
             </div>
           )}
         </div>
       </main>
 
-      {/* Modal: Create Class */}
+      {/* Modal: Create Program */}
       <Modal
         isOpen={isClassModalOpen}
         onClose={() => setIsClassModalOpen(false)}
-        title="Create New Academic Class"
-        description="e.g. Grade 10, Grade 9 (holds individual athletic batches)"
+        title="Create New Program"
+        description="e.g. Grade 10, Athletic Training Program (holds individual athletic batches)"
       >
         <form onSubmit={handleCreateClass} className="space-y-4">
           {modalError && (
@@ -411,11 +411,11 @@ export default function ClassesBatchesPage({
 
           <div>
             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-              Class Name *
+              Program Name *
             </label>
             <Input
               required
-              placeholder="e.g. Grade 10"
+              placeholder="e.g. Grade 10 or Football Academy"
               value={classForm.name}
               onChange={(e) =>
                 setClassForm((prev) => ({ ...prev, name: e.target.value }))
@@ -442,7 +442,7 @@ export default function ClassesBatchesPage({
               Description (Optional)
             </label>
             <Input
-              placeholder="Cohort notes..."
+              placeholder="Program notes..."
               value={classForm.description}
               onChange={(e) =>
                 setClassForm((prev) => ({ ...prev, description: e.target.value }))
@@ -462,7 +462,7 @@ export default function ClassesBatchesPage({
               type="submit"
               className="bg-orange-600 hover:bg-orange-700 text-white font-semibold"
             >
-              Save Class
+              Save Program
             </Button>
           </div>
         </form>
@@ -473,7 +473,7 @@ export default function ClassesBatchesPage({
         isOpen={isBatchModalOpen}
         onClose={() => setIsBatchModalOpen(false)}
         title="Create Cohort Batch"
-        description="Add a focused training batch to this class"
+        description="Add a focused training batch to this program"
       >
         <form onSubmit={handleCreateBatch} className="space-y-4">
           {modalError && (

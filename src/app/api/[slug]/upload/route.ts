@@ -28,13 +28,21 @@ export async function POST(
         return NextResponse.json({ error: "dataUrl is required." }, { status: 400 });
       }
 
-      const match = dataUrl.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
-      if (!match) {
+      // Check image or video dataUrl
+      const imgMatch = dataUrl.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+      const vidMatch = dataUrl.match(/^data:video\/([a-zA-Z0-9+]+);base64,(.+)$/);
+
+      if (imgMatch) {
+        const subtype = imgMatch[1].toLowerCase();
+        ext = subtype === "png" ? "png" : subtype === "webp" ? "webp" : subtype === "gif" ? "gif" : "jpg";
+        buffer = Buffer.from(imgMatch[2], "base64");
+      } else if (vidMatch) {
+        const subtype = vidMatch[1].toLowerCase();
+        ext = subtype === "webm" ? "webm" : subtype === "quicktime" ? "mov" : "mp4";
+        buffer = Buffer.from(vidMatch[2], "base64");
+      } else {
         return NextResponse.json({ error: "Invalid dataUrl format." }, { status: 400 });
       }
-
-      ext = match[1] === "png" ? "png" : match[1] === "webp" ? "webp" : "jpg";
-      buffer = Buffer.from(match[2], "base64");
     } else if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
       const file = formData.get("file") as File | null;
@@ -43,13 +51,27 @@ export async function POST(
       }
       const arrayBuffer = await file.arrayBuffer();
       buffer = Buffer.from(arrayBuffer);
-      if (file.name.endsWith(".png")) ext = "png";
-      else if (file.name.endsWith(".webp")) ext = "webp";
+
+      const lowerName = file.name.toLowerCase();
+      const mime = file.type.toLowerCase();
+
+      if (lowerName.endsWith(".png") || mime === "image/png") ext = "png";
+      else if (lowerName.endsWith(".webp") || mime === "image/webp") ext = "webp";
+      else if (lowerName.endsWith(".gif") || mime === "image/gif") ext = "gif";
+      else if (lowerName.endsWith(".mp4") || mime === "video/mp4") ext = "mp4";
+      else if (lowerName.endsWith(".webm") || mime === "video/webm") ext = "webm";
+      else if (lowerName.endsWith(".mov") || lowerName.endsWith(".quicktime") || mime === "video/quicktime") ext = "mov";
+      else if (lowerName.endsWith(".m4v") || mime === "video/x-m4v") ext = "m4v";
+      else ext = "jpg";
     } else {
       return NextResponse.json({ error: "Unsupported content type." }, { status: 400 });
     }
 
-    const filename = `banner-${slug}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
+    // Generate clean, deterministic sequence order filename (never raw client filename)
+    const existingFiles = await fs.promises.readdir(uploadsDir).catch(() => []);
+    const nextSeq = String(existingFiles.length + 1).padStart(4, "0");
+    const timestamp = Date.now();
+    const filename = `tile_seq_${nextSeq}_${timestamp}.${ext}`;
     const filePath = path.join(uploadsDir, filename);
 
     await fs.promises.writeFile(filePath, buffer);
@@ -66,4 +88,3 @@ export async function POST(
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-

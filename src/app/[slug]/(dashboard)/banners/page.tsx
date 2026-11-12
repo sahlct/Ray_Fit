@@ -45,6 +45,18 @@ interface Banner {
   createdAt: string;
 }
 
+function isVideoUrl(url: string | null | undefined): boolean {
+  if (!url) return false;
+  const clean = url.split("?")[0].toLowerCase();
+  return (
+    clean.endsWith(".mp4") ||
+    clean.endsWith(".webm") ||
+    clean.endsWith(".mov") ||
+    clean.endsWith(".m4v") ||
+    url.startsWith("data:video/")
+  );
+}
+
 export default function BannersPage() {
   const params = useParams();
   const slug = params?.slug as string;
@@ -140,13 +152,33 @@ export default function BannersPage() {
     setIsModalOpen(true);
   };
 
-  // Image Selection & Auto-Launch Cropper Modal
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Image / Video Selection & Storage
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (file.type.startsWith("video/")) {
+      const toastId = toast.loading("Uploading ad video tile...");
+      try {
+        const fd = new FormData();
+        fd.append("file", file);
+        const res = await fetch(`/api/${slug}/upload`, {
+          method: "POST",
+          body: fd,
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to upload video");
+        setForm((prev) => ({ ...prev, imageUrl: data.url }));
+        toast.success("Ad video uploaded and saved sequentially!", { id: toastId });
+      } catch (err: any) {
+        toast.error(err.message || "Video upload failed.", { id: toastId });
+      }
+      e.target.value = "";
+      return;
+    }
+
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select a valid image file (JPG, PNG, WebP).");
+      toast.error("Please select a valid image or video file (JPG, PNG, WebP, MP4, WebM).");
       return;
     }
 
@@ -411,20 +443,32 @@ export default function BannersPage() {
                     }`}
                   >
                     <div className="flex items-center gap-4 min-w-0">
-                      {/* Image Thumbnail */}
-                      <div className="w-28 h-16 rounded-lg overflow-hidden bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700 relative">
-                        <img
-                          src={b.imageUrl}
-                          alt={b.title}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as any).src =
-                              "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80";
-                          }}
-                        />
-                        <span className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/70 text-[10px] text-white font-mono">
+                      {/* Media Thumbnail */}
+                      <div className="w-28 h-16 rounded-lg overflow-hidden bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700 relative flex items-center justify-center">
+                        {isVideoUrl(b.imageUrl) ? (
+                          <video
+                            src={b.imageUrl}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover pointer-events-none"
+                          />
+                        ) : (
+                          <img
+                            src={b.imageUrl}
+                            alt={b.title}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                        <span className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/70 text-[10px] text-white font-mono z-10">
                           #{b.sortOrder}
                         </span>
+                        {isVideoUrl(b.imageUrl) && (
+                          <span className="absolute top-1 right-1 px-1.5 py-0.5 rounded bg-orange-600/90 text-[9px] text-white font-bold uppercase tracking-wider z-10">
+                            VIDEO
+                          </span>
+                        )}
                       </div>
 
                       <div className="min-w-0">
@@ -533,11 +577,24 @@ export default function BannersPage() {
               <div className="relative rounded-xl overflow-hidden aspect-[2.4/1] bg-slate-800 shadow-md group">
                 {activeBanners.length > 0 ? (
                   <>
-                    <img
-                      src={activeBanners[activePreviewIndex]?.imageUrl}
-                      alt={activeBanners[activePreviewIndex]?.title}
-                      className="w-full h-full object-cover transition-all duration-500"
-                    />
+                    {isVideoUrl(activeBanners[activePreviewIndex]?.imageUrl) ? (
+                      <video
+                        key={activeBanners[activePreviewIndex]?.imageUrl}
+                        src={activeBanners[activePreviewIndex]?.imageUrl}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover transition-all duration-500"
+                      />
+                    ) : (
+                      <img
+                        key={activeBanners[activePreviewIndex]?.imageUrl}
+                        src={activeBanners[activePreviewIndex]?.imageUrl}
+                        alt={activeBanners[activePreviewIndex]?.title}
+                        className="w-full h-full object-cover transition-all duration-500"
+                      />
+                    )}
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col justify-end p-2.5">
                       <span className="text-[8px] font-bold uppercase tracking-wider text-orange-300">
@@ -628,7 +685,7 @@ export default function BannersPage() {
           <input
             type="file"
             ref={fileInputRef}
-            accept="image/*"
+            accept="image/*,video/mp4,video/webm,video/quicktime,video/*"
             onChange={handleFileSelect}
             className="hidden"
           />
@@ -648,10 +705,10 @@ export default function BannersPage() {
             />
           </div>
 
-          {/* Image File Selector & Crop Action */}
+          {/* Image / Video File Selector & Preview */}
           <div>
             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
-              <span>Banner Image File (Landscape Mobile Carousel) *</span>
+              <span>Banner Media File (Image or Video) *</span>
               {form.imageUrl && (
                 <span className="text-[11px] font-normal text-orange-500 dark:text-orange-400 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Stored & Ready
@@ -661,12 +718,23 @@ export default function BannersPage() {
 
             {form.imageUrl ? (
               <div className="space-y-2">
-                <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 aspect-[2.4/1] bg-slate-950 group">
-                  <img
-                    src={form.imageUrl}
-                    alt="Current Banner Crop"
-                    className="w-full h-full object-cover"
-                  />
+                <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 aspect-[2.4/1] bg-slate-950 group flex items-center justify-center">
+                  {isVideoUrl(form.imageUrl) ? (
+                    <video
+                      src={form.imageUrl}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={form.imageUrl}
+                      alt="Current Banner Crop"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                     <Button
                       type="button"
@@ -674,19 +742,21 @@ export default function BannersPage() {
                       onClick={() => fileInputRef.current?.click()}
                       className="bg-white/90 hover:bg-white text-slate-900 text-xs font-bold shadow-md"
                     >
-                      <Upload className="w-3.5 h-3.5 mr-1" /> Replace Image
+                      <Upload className="w-3.5 h-3.5 mr-1" /> Replace File
                     </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={() => {
-                        setRawImageSrc(form.imageUrl);
-                        setIsCropperOpen(true);
-                      }}
-                      className="bg-orange-500 hover:bg-orange-500 text-white text-xs font-bold shadow-md"
-                    >
-                      <Crop className="w-3.5 h-3.5 mr-1" /> Edit Crop
-                    </Button>
+                    {!isVideoUrl(form.imageUrl) && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => {
+                          setRawImageSrc(form.imageUrl);
+                          setIsCropperOpen(true);
+                        }}
+                        className="bg-orange-500 hover:bg-orange-500 text-white text-xs font-bold shadow-md"
+                      >
+                        <Crop className="w-3.5 h-3.5 mr-1" /> Edit Crop
+                      </Button>
+                    )}
                   </div>
                 </div>
 
@@ -711,10 +781,10 @@ export default function BannersPage() {
                 </div>
                 <div>
                   <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
-                    Click to select banner image file
+                    Click to select banner image or video file
                   </span>
                   <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Supports JPG, PNG, WebP • Selecting opens crop, zoom & rotation editor
+                    Supports JPG, PNG, WebP, MP4, WebM • Saved sequentially to storage
                   </span>
                 </div>
               </div>

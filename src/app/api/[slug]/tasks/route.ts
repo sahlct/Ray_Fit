@@ -91,6 +91,9 @@ export async function POST(
       const {
         title,
         description,
+        metrics,
+        createdById,
+        // Legacy single metric fields fallback
         metricType,
         unit,
         operator,
@@ -98,41 +101,13 @@ export async function POST(
         maxValue,
         targetValue,
         clinicalNotes,
-        createdById,
         criticalZones,
       } = body;
 
-      if (!title || !metricType || !unit || !operator) {
-        return NextResponse.json(
-          { error: 'Title, Metric Type, Unit, and Benchmark Operator are required.' },
-          { status: 400 }
-        );
+      if (!title?.trim()) {
+        return NextResponse.json({ error: 'Task Title is required.' }, { status: 400 });
       }
 
-      // Sanitize critical zones: each must have type: "BELOW" | "ABOVE" and numeric value
-      const sanitizedCriticalZones = Array.isArray(criticalZones)
-        ? criticalZones
-            .filter(
-              (z: any) =>
-                z &&
-                (z.type === 'BELOW' || z.type === 'ABOVE') &&
-                z.value !== undefined &&
-                z.value !== null &&
-                !isNaN(Number(z.value))
-            )
-            .map((z: any) => ({
-              id: z.id || Math.random().toString(36).substring(2, 9),
-              type: z.type === 'BELOW' ? 'BELOW' : 'ABOVE',
-              value: Number(z.value),
-              label:
-                z.label?.trim() ||
-                (z.type === 'BELOW'
-                  ? `Critical Low (< ${z.value} ${unit})`
-                  : `Critical High (> ${z.value} ${unit})`),
-            }))
-        : null;
-
-      // Find coach or admin
       const creatorId =
         createdById ||
         (await prisma.user.findFirst({ where: { tenantId: tenant.id } }))?.id;
@@ -141,57 +116,129 @@ export async function POST(
         return NextResponse.json({ error: 'No author user found.' }, { status: 400 });
       }
 
-      // Create task
-      const task = await prisma.healthTask.create({
-        data: {
-          tenantId: tenant.id,
-          createdById: creatorId,
-          title: title.trim(),
-          description: description?.trim(),
-          metricType: metricType as HealthMetricType,
-          unit: unit.trim(),
-          frequency: FrequencyType.DAILY,
-          isActive: true,
-        },
-      });
+      let metricConfigs: any[] = [];
+      if (Array.isArray(metrics) && metrics.length > 0) {
+        metricConfigs = metrics;
+      } else if (metricType && unit && operator) {
+        metricConfigs = [{
+          metricType,
+          unit,
+          operator,
+          minValue,
+          maxValue,
+          targetValue,
+          clinicalNotes,
+          criticalZones,
+        }];
+      } else {
+        return NextResponse.json(
+          { error: 'At least one benchmark metric must be configured for the task.' },
+          { status: 400 }
+        );
+      }
 
-      // Create initial BenchmarkVersion (version 1)
-      const benchmark = await prisma.benchmarkVersion.create({
-        data: {
-          taskId: task.id,
-          tenantId: tenant.id,
-          versionNumber: 1,
-          operator: operator as BenchmarkOperator,
-          minValue: minValue ? Number(minValue) : null,
-          maxValue: maxValue ? Number(maxValue) : null,
-          targetValue: targetValue ? Number(targetValue) : (operator === 'EXACT_MATCH' && minValue ? Number(minValue) : null),
-          clinicalNotes: clinicalNotes?.trim() || null,
-          criticalZones: sanitizedCriticalZones ?? undefined,
-          effectiveFrom: new Date(),
-        },
-      });
+      // Enforce: No duplicate metric types in the same task
+      const seenTypes = new Set<string>();
+      for (const m of metricConfigs) {
+        if (!m.metricType || !m.unit || !m.operator) {
+          return NextResponse.json(
+            { error: 'Metric type, measurement unit, and comparison operator are required for every metric.' },
+            { status: 400 }
+          );
+        }
+        if (seenTypes.has(m.metricType)) {
+          return NextResponse.json(
+            { error: `Duplicate metric type '${m.metricType}' found. Each metric type can only be added once per task.` },
+            { status: 400 }
+          );
+        }
+        seenTypes.add(m.metricType);
+      }
+
+      const createdTasks: any[] = [];
+
+      for (const m of metricConfigs) {
+        const sanitizedCriticalZones = Array.isArray(m.criticalZones)
+          ? m.criticalZones
+              .filter(
+                (z: any) =>
+                  z &&
+                  (z.type === 'BELOW' || z.type === 'ABOVE') &&
+                  z.value !== undefined &&
+                  z.value !== null &&
+                  !isNaN(Number(z.value))
+              )
+              .map((z: any) => ({
+                id: z.id || Math.random().toString(36).substring(2, 9),
+                type: z.type === 'BELOW' ? 'BELOW' : 'ABOVE',
+                value: Number(z.value),
+                label:
+                  z.label?.trim() ||
+                  (z.type === 'BELOW'
+                    ? `Critical Low (< ${z.value} ${m.unit})`
+                    : `Critical High (> ${z.value} ${m.unit})`),
+              }))
+          : null;
+
+        const task = await prisma.healthTask.create({
+          data: {
+            tenantId: tenant.id,
+            createdById: creatorId,
+            title: title.trim(),
+            description: description?.trim() || null,
+            metricType: m.metricType as HealthMetricType,
+            unit: m.unit.trim(),
+            frequency: FrequencyType.DAILY,
+            isActive: true,
+          },
+        });
+
+        const benchmark = await prisma.benchmarkVersion.create({
+          data: {
+            taskId: task.id,
+            tenantId: tenant.id,
+            versionNumber: 1,
+            operator: m.operator as BenchmarkOperator,
+            minValue: m.minValue ? Number(m.minValue) : null,
+            maxValue: m.maxValue ? Number(m.maxValue) : null,
+            targetValue: m.targetValue
+              ? Number(m.targetValue)
+              : m.operator === 'EXACT_MATCH' && m.minValue
+              ? Number(m.minValue)
+              : null,
+            clinicalNotes: m.clinicalNotes?.trim() || null,
+            criticalZones: sanitizedCriticalZones ?? undefined,
+            effectiveFrom: new Date(),
+          },
+        });
+
+        createdTasks.push({ ...task, benchmarks: [benchmark] });
+      }
 
       await logAuditEvent({
         tenantId: tenant.id,
         action: 'TASK_CREATED',
         module: 'TASKS',
-        details: { taskId: task.id, title: task.title, metric: task.metricType, criticalZonesCount: sanitizedCriticalZones?.length || 0 },
+        details: { title: title.trim(), metricsCount: createdTasks.length },
       });
 
-      return NextResponse.json({ success: true, task, benchmark }, { status: 201 });
+      return NextResponse.json({ success: true, tasks: createdTasks, task: createdTasks[0] }, { status: 201 });
     }
 
     if (action === 'ASSIGN_TASK') {
-      const { taskId, batchId, classId, startDate, endDate, startTime, endTime, durationMinutes } = body;
+      const { taskId, taskIds, batchId, classId, startDate, endDate, startTime, endTime, durationMinutes } = body;
 
-      if (!taskId || (!batchId && !classId) || !startDate || !endDate) {
+      const targetTaskIds: string[] = Array.isArray(taskIds) && taskIds.length > 0
+        ? taskIds
+        : (taskId ? [taskId] : []);
+
+      if (targetTaskIds.length === 0 || (!batchId && !classId) || !startDate || !endDate) {
         return NextResponse.json(
-          { error: 'Task, target Batch/Class, Start Date, and End Date are required.' },
+          { error: 'Task(s), target Program/Batch, Start Date, and End Date are required.' },
           { status: 400 }
         );
       }
 
-      // Calculate duration in minutes if not provided
       let durationMins = durationMinutes ? Number(durationMinutes) : null;
       const windowStart = startTime || '08:00';
       const windowEnd = endTime || '09:30';
@@ -208,66 +255,64 @@ export async function POST(
         }
       }
 
-      // Find latest benchmark version for this task
-      const benchmark = await prisma.benchmarkVersion.findFirst({
-        where: { taskId, tenantId: tenant.id },
-        orderBy: { versionNumber: 'desc' },
-      });
-
-      if (!benchmark) {
-        return NextResponse.json(
-          { error: 'No benchmark configured for this task.' },
-          { status: 400 }
-        );
-      }
-
       const start = new Date(startDate);
       const end = new Date(endDate);
-
-      const assignment = await prisma.healthTaskAssignment.create({
-        data: {
-          taskId,
-          batchId: batchId || null,
-          classId: classId || null,
-          startDate: start,
-          endDate: end,
-          isActive: true,
-        },
-      });
-
-      // Generate timetable entries for the next 7 days or date range
       const daysCount = Math.min(
         14,
         Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 3600 * 24)))
       );
 
-      for (let i = 0; i <= daysCount; i++) {
-        const schedDate = new Date(start);
-        schedDate.setDate(start.getDate() + i);
-        schedDate.setHours(0, 0, 0, 0);
+      const createdAssignments: any[] = [];
 
-        await prisma.timetableAssignment.create({
+      for (const tId of targetTaskIds) {
+        const benchmark = await prisma.benchmarkVersion.findFirst({
+          where: { taskId: tId, tenantId: tenant.id },
+          orderBy: { versionNumber: 'desc' },
+        });
+
+        if (!benchmark) continue;
+
+        const assignment = await prisma.healthTaskAssignment.create({
           data: {
-            tenantId: tenant.id,
-            assignmentId: assignment.id,
-            benchmarkVersionId: benchmark.id,
-            scheduledDate: schedDate,
-            windowStartTime: windowStart,
-            windowEndTime: windowEnd,
-            durationMinutes: durationMins,
-            status: i === 0 ? 'ACTIVE' : 'SCHEDULED',
+            taskId: tId,
+            batchId: batchId || null,
+            classId: classId || null,
+            startDate: start,
+            endDate: end,
+            isActive: true,
           },
         });
+
+        for (let i = 0; i <= daysCount; i++) {
+          const schedDate = new Date(start);
+          schedDate.setDate(start.getDate() + i);
+          schedDate.setHours(0, 0, 0, 0);
+
+          await prisma.timetableAssignment.create({
+            data: {
+              tenantId: tenant.id,
+              assignmentId: assignment.id,
+              benchmarkVersionId: benchmark.id,
+              scheduledDate: schedDate,
+              windowStartTime: windowStart,
+              windowEndTime: windowEnd,
+              durationMinutes: durationMins,
+              status: i === 0 ? 'ACTIVE' : 'SCHEDULED',
+            },
+          });
+        }
+
+        createdAssignments.push(assignment);
       }
 
       await logAuditEvent({
         tenantId: tenant.id,
         action: 'TASK_ASSIGNED',
         module: 'TIMETABLES',
-        details: { taskId, batchId, classId, scheduledDays: daysCount, windowStart, windowEnd, durationMins },
+        details: { taskCount: targetTaskIds.length, batchId, classId, scheduledDays: daysCount, durationMins },
       });
 
-      return NextResponse.json({ success: true, assignment }, { status: 201 });
+      return NextResponse.json({ success: true, assignments: createdAssignments, assignment: createdAssignments[0] }, { status: 201 });
     }
 
     return NextResponse.json({ error: 'Invalid action.' }, { status: 400 });
